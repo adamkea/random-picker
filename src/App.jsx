@@ -72,7 +72,7 @@ function App() {
   return (
     <div className="app">
       <h1 className="app-title">
-        <span>🏁</span> Emoji Racer
+        <span>🏁</span> Pick A Winner
       </h1>
 
       {phase === 'input' && (
