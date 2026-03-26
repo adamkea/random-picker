@@ -6,6 +6,7 @@ const TICK_INTERVAL = 30 // ~33fps
 export default function RaceTrack({ racers, phase, duration, onCountdownDone, onRaceFinish }) {
   const [countdownValue, setCountdownValue] = useState(3)
   const [positions, setPositions] = useState(() => racers.map(() => 0))
+  const [velocities, setVelocities] = useState(() => racers.map(() => 0))
   const raceRef = useRef(null)
   const winnerRef = useRef(null)
 
@@ -15,6 +16,7 @@ export default function RaceTrack({ racers, phase, duration, onCountdownDone, on
 
     setCountdownValue(3)
     setPositions(racers.map(() => 0))
+    setVelocities(racers.map(() => 0))
 
     // Pre-determine winner
     winnerRef.current = racers[Math.floor(Math.random() * racers.length)]
@@ -89,7 +91,10 @@ export default function RaceTrack({ racers, phase, duration, onCountdownDone, on
         return maxPositions[i]
       })
 
-      setPositions(newPositions)
+      setPositions(prev => {
+        setVelocities(newPositions.map((pos, i) => pos - (prev[i] || 0)))
+        return newPositions
+      })
 
       if (progress >= 1) {
         clearInterval(raceRef.current)
@@ -143,8 +148,11 @@ export default function RaceTrack({ racers, phase, duration, onCountdownDone, on
       <div className="race-track">
         {racers.map((racer, i) => {
           const pos = positions[i] || 0
+          const vel = velocities[i] || 0
           const isFinished = pos >= 0.99
-          const isFast = pos > 0.5
+          // Scale threshold with duration so trails show at similar visual speeds
+          const speedThreshold = 0.003 * (5000 / (duration || 5000))
+          const isFast = vel > speedThreshold
 
           return (
             <motion.div
