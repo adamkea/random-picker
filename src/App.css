@@ -148,6 +148,75 @@
   font-size: 20px;
 }
 
+.emoji-pick-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.emoji-pick-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.racer-tag {
+  position: relative;
+}
+
+.emoji-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  background: rgba(30, 30, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.15s ease;
+}
+
+.emoji-option {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 22px;
+  padding: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.emoji-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.15);
+}
+
+.emoji-option.selected {
+  border-color: #a78bfa;
+  background: rgba(167, 139, 250, 0.2);
+}
+
+.emoji-option.emoji-random {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4px;
+}
+
+.emoji-option.emoji-random::after {
+  content: ' Random';
+}
+
 .racer-tag .remove {
   background: none;
   border: none;

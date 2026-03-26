@@ -5,17 +5,20 @@ import Result from './components/Result'
 import History from './components/History'
 import './App.css'
 
-const EMOJI_POOL = [
+export const EMOJI_POOL = [
   '🚀', '🏎️', '🐎', '🦄', '🐆', '🐇', '🦅', '🐉', '🏍️', '🛸',
   '🐅', '🦊', '🐬', '🦈', '⚡', '🔥', '💨', '🌪️', '🎯', '🦁',
 ]
 
-function assignEmojis(names) {
-  const shuffled = [...EMOJI_POOL].sort(() => Math.random() - 0.5)
-  return names.map((name, i) => ({
-    name,
-    emoji: shuffled[i % shuffled.length],
-    id: `${name}-${i}`,
+function assignEmojis(entries) {
+  const usedEmojis = new Set(entries.filter(e => e.emoji).map(e => e.emoji))
+  const available = EMOJI_POOL.filter(e => !usedEmojis.has(e))
+  const shuffled = [...available].sort(() => Math.random() - 0.5)
+  let randomIdx = 0
+  return entries.map((entry, i) => ({
+    name: entry.name,
+    emoji: entry.emoji || shuffled[randomIdx++ % (shuffled.length || 1)] || EMOJI_POOL[i % EMOJI_POOL.length],
+    id: `${entry.name}-${i}`,
   }))
 }
 
@@ -26,9 +29,9 @@ function App() {
   const [winner, setWinner] = useState(null)
   const [history, setHistory] = useState([])
 
-  const handleStartRace = useCallback((nameList) => {
-    const assigned = assignEmojis(nameList)
-    setNames(nameList)
+  const handleStartRace = useCallback((entries) => {
+    const assigned = assignEmojis(entries)
+    setNames(entries)
     setRacers(assigned)
     setWinner(null)
     setPhase('countdown')
