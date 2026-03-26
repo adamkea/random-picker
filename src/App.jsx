@@ -39,6 +39,7 @@ function App() {
   const [phase, setPhase] = useState('input') // input | countdown | racing | result
   const [racers, setRacers] = useState([])
   const [names, setNames] = useState([])
+  const [duration, setDuration] = useState(30000)
   const [winner, setWinner] = useState(null)
   const [history, setHistory] = useState(() => {
     try {
@@ -52,10 +53,11 @@ function App() {
     localStorage.setItem('emoji-racer-history', JSON.stringify(history))
   }, [history])
 
-  const handleStartRace = useCallback((entries) => {
+  const handleStartRace = useCallback((entries, raceDuration) => {
     const assigned = assignEmojis(entries)
     setNames(entries)
     setRacers(assigned)
+    setDuration(raceDuration)
     setWinner(null)
     setPhase('countdown')
   }, [])
@@ -98,6 +100,7 @@ function App() {
         <RaceTrack
           racers={racers}
           phase={phase}
+          duration={duration}
           onCountdownDone={handleCountdownDone}
           onRaceFinish={handleRaceFinish}
         />
