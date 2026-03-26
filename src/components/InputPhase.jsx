@@ -13,6 +13,7 @@ function loadEntries() {
 }
 
 const DURATION_OPTIONS = [
+  { label: '15s', value: 15000 },
   { label: '30s', value: 30000 },
   { label: '1 min', value: 60000 },
   { label: '1 min 30s', value: 90000 },
@@ -23,7 +24,7 @@ export default function InputPhase({ onStart }) {
   const [inputValue, setInputValue] = useState('')
   const [selectedEmoji, setSelectedEmoji] = useState(null)
   const [showPicker, setShowPicker] = useState(false)
-  const [duration, setDuration] = useState(30000)
+  const [duration, setDuration] = useState(15000)
   const inputRef = useRef(null)
 
   useEffect(() => {
