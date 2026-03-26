@@ -229,14 +229,13 @@
   flex: 1;
   position: relative;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .racer-emoji {
   position: absolute;
   font-size: 32px;
-  top: 50%;
-  transform: translateY(-50%);
   z-index: 2;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
 }
@@ -247,8 +246,7 @@
 
 .speed-trail {
   position: absolute;
-  top: 50%;
-  transform: translate(-100%, -50%);
+  transform: translateX(-100%);
   width: 60px;
   height: 6px;
   background: linear-gradient(to left, rgba(255, 255, 255, 0.5), transparent);
