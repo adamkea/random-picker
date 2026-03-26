@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 
 const RACE_DURATION = 5000 // 5 seconds
 const TICK_INTERVAL = 30 // ~33fps
@@ -37,12 +38,8 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
     // Generate random speed profiles for each racer
     const profiles = racers.map((_, i) => {
       const isWinner = i === winnerIndex
-      // Base speed determines how fast they go overall
-      // Winner gets a slightly higher base to guarantee finishing first
       const baseSpeed = isWinner ? 0.85 + Math.random() * 0.15 : 0.5 + Math.random() * 0.35
-      // Random stutter points — moments where racer slows down
       const stutterPoints = Array.from({ length: 3 + Math.floor(Math.random() * 3) }, () => Math.random())
-      // Burst point — near the end, racer may speed up
       const burstPoint = 0.7 + Math.random() * 0.2
       return { baseSpeed, stutterPoints, burstPoint, isWinner }
     })
@@ -74,14 +71,12 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
 
         // Winner must reach 1.0 at the end
         if (profile.isWinner) {
-          // Ensure winner converges to finish
           const minPos = progress * 0.6
           pos = Math.max(pos, minPos)
           if (progress > 0.9) {
             pos = Math.max(pos, (progress - 0.9) / 0.1 * (1 - pos) + pos)
           }
         } else {
-          // Non-winners capped below finish
           pos = Math.min(pos, 0.75 + Math.random() * 0.15)
         }
 
@@ -92,7 +87,6 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
 
       if (progress >= 1) {
         clearInterval(raceRef.current)
-        // Small delay before showing result
         setTimeout(() => {
           onRaceFinish(winnerRef.current)
         }, 400)
@@ -112,31 +106,80 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
   if (phase === 'countdown') {
     return (
       <div className="race-container">
-        <div className={`countdown ${countdownValue === 'GO!' ? 'go' : ''}`}>
-          {countdownValue}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={countdownValue}
+            className={`countdown ${countdownValue === 'GO!' ? 'go' : ''}`}
+            initial={{ scale: 2.5, opacity: 0, rotate: -15 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            exit={{ scale: 0.3, opacity: 0, rotate: 15, filter: 'blur(8px)' }}
+            transition={{
+              type: 'spring',
+              stiffness: 300,
+              damping: 20,
+              mass: 0.8,
+            }}
+          >
+            {countdownValue}
+          </motion.div>
+        </AnimatePresence>
       </div>
     )
   }
 
   return (
-    <div className="race-container">
+    <motion.div
+      className="race-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="race-track">
-        {racers.map((racer, i) => (
-          <div key={racer.id} className="lane">
-            <div className="lane-label">{racer.name}</div>
-            <div className="lane-track">
-              <div
-                className="racer-emoji"
-                style={{ left: `${(positions[i] || 0) * (100 - 10)}%` }}
-              >
-                {racer.emoji}
+        {racers.map((racer, i) => {
+          const pos = positions[i] || 0
+          const isFinished = pos >= 0.99
+          const isFast = pos > 0.5
+
+          return (
+            <motion.div
+              key={racer.id}
+              className="lane"
+              initial={{ x: -30, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: i * 0.05, type: 'spring', stiffness: 200 }}
+            >
+              <div className="lane-label">{racer.name}</div>
+              <div className="lane-track">
+                {/* Speed trail effect */}
+                {isFast && (
+                  <motion.div
+                    className="speed-trail"
+                    style={{ left: `${pos * 90}%` }}
+                    animate={{ opacity: [0.6, 0.2, 0.6] }}
+                    transition={{ duration: 0.4, repeat: Infinity }}
+                  />
+                )}
+                <motion.div
+                  className={`racer-emoji ${isFinished ? 'racer-finished' : ''}`}
+                  animate={{
+                    left: `${pos * 90}%`,
+                    scale: isFinished ? [1, 1.4, 1.1] : 1,
+                    rotate: isFinished ? [0, -10, 10, 0] : 0,
+                  }}
+                  transition={{
+                    left: { type: 'tween', duration: 0.05, ease: 'linear' },
+                    scale: { duration: 0.4, ease: 'easeOut' },
+                    rotate: { duration: 0.4, ease: 'easeOut' },
+                  }}
+                >
+                  {racer.emoji}
+                </motion.div>
+                <div className="finish-line" />
               </div>
-              <div className="finish-line" />
-            </div>
-          </div>
-        ))}
+            </motion.div>
+          )
+        })}
       </div>
-    </div>
+    </motion.div>
   )
 }

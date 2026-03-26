@@ -181,15 +181,8 @@
   text-align: center;
   font-size: 80px;
   font-weight: 800;
-  animation: countPulse 0.4s ease;
   text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
   padding: 40px 0;
-}
-
-@keyframes countPulse {
-  0% { transform: scale(1.8); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
 }
 
 .countdown.go {
@@ -243,9 +236,24 @@
   font-size: 32px;
   top: 50%;
   transform: translateY(-50%);
-  transition: none;
   z-index: 2;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.racer-finished {
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.8));
+}
+
+.speed-trail {
+  position: absolute;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  width: 60px;
+  height: 6px;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.5), transparent);
+  border-radius: 3px;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .finish-line {
@@ -273,12 +281,6 @@
   border-radius: 16px;
   padding: 32px;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  animation: resultAppear 0.5s ease;
-}
-
-@keyframes resultAppear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .winner-emoji {

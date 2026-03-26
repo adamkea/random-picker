@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 
 export default function Result({ winner, onRerace, onNewRace }) {
@@ -24,18 +25,49 @@ export default function Result({ winner, onRerace, onNewRace }) {
   }, [])
 
   return (
-    <div className="result-container">
-      <div className="winner-emoji">{winner.emoji}</div>
-      <div className="winner-name">{winner.name}</div>
-      <div className="winner-label">wins the race! 🏆</div>
-      <div className="result-actions">
+    <motion.div
+      className="result-container"
+      initial={{ opacity: 0, y: 40, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+    >
+      <motion.div
+        className="winner-emoji"
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}
+      >
+        {winner.emoji}
+      </motion.div>
+      <motion.div
+        className="winner-name"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.4 }}
+      >
+        {winner.name}
+      </motion.div>
+      <motion.div
+        className="winner-label"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.3 }}
+      >
+        wins the race! 🏆
+      </motion.div>
+      <motion.div
+        className="result-actions"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55, duration: 0.3 }}
+      >
         <button className="btn btn-rerace" onClick={onRerace}>
           Race Again
         </button>
         <button className="btn btn-reset" onClick={onNewRace}>
           New Racers
         </button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
