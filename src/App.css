@@ -310,50 +310,35 @@
 }
 
 .race-track {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.racer-wrapper {
+  position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.lane {
-  display: flex;
   align-items: center;
-  height: 68px;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
+  z-index: 2;
 }
 
-.lane:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.lane:nth-child(even) {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.lane-label {
-  width: 100px;
-  font-size: 13px;
+.racer-name {
+  font-size: 12px;
   font-weight: 600;
-  padding-left: 10px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
   white-space: nowrap;
+  text-align: center;
+  margin-bottom: 2px;
+  max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
-  z-index: 2;
-  flex-shrink: 0;
-}
-
-.lane-track {
-  flex: 1;
-  position: relative;
-  height: 100%;
-  display: flex;
-  align-items: center;
 }
 
 .racer-emoji {
-  position: absolute;
   z-index: 2;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
   display: flex;
@@ -366,7 +351,9 @@
 
 .speed-trail {
   position: absolute;
-  transform: translateX(-100%);
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
   width: 60px;
   height: 6px;
   background: linear-gradient(to left, rgba(255, 255, 255, 0.5), transparent);
@@ -377,7 +364,7 @@
 
 .finish-line {
   position: absolute;
-  right: 30px;
+  right: 8%;
   top: 0;
   bottom: 0;
   width: 3px;
@@ -505,13 +492,13 @@
   .input-phase {
     padding: 18px;
   }
-  .lane-label {
-    width: 70px;
-    font-size: 11px;
+  .racer-name {
+    font-size: 10px;
+    max-width: 80px;
   }
   .racer-emoji .lottie-racer {
-    width: 28px !important;
-    height: 28px !important;
+    width: 64px !important;
+    height: 64px !important;
   }
   .winner-emoji .lottie-racer {
     width: 60px !important;
