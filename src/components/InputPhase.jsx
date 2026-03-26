@@ -6,30 +6,21 @@ const MAX_RACERS = 10
 export default function InputPhase({ onStart }) {
   const [entries, setEntries] = useState([]) // { name, emoji: string|null }
   const [inputValue, setInputValue] = useState('')
-  const [pickerIndex, setPickerIndex] = useState(null)
+  const [selectedEmoji, setSelectedEmoji] = useState(null)
+  const [showPicker, setShowPicker] = useState(false)
   const inputRef = useRef(null)
 
   const addName = () => {
     const trimmed = inputValue.trim()
     if (!trimmed || entries.length >= MAX_RACERS) return
-    setEntries(prev => [...prev, { name: trimmed, emoji: null }])
+    setEntries(prev => [...prev, { name: trimmed, emoji: selectedEmoji }])
     setInputValue('')
+    setSelectedEmoji(null)
     inputRef.current?.focus()
   }
 
   const removeName = (index) => {
     setEntries(prev => prev.filter((_, i) => i !== index))
-    if (pickerIndex === index) setPickerIndex(null)
-  }
-
-  const selectEmoji = (index, emoji) => {
-    setEntries(prev => prev.map((e, i) => i === index ? { ...e, emoji } : e))
-    setPickerIndex(null)
-  }
-
-  const clearEmoji = (index) => {
-    setEntries(prev => prev.map((e, i) => i === index ? { ...e, emoji: null } : e))
-    setPickerIndex(null)
   }
 
   const handleKeyDown = (e) => {
@@ -54,6 +45,12 @@ export default function InputPhase({ onStart }) {
     }
   }
 
+  const handlePickEmoji = (emoji) => {
+    setSelectedEmoji(emoji)
+    setShowPicker(false)
+    inputRef.current?.focus()
+  }
+
   return (
     <div className="input-phase">
       <h2>Enter Racers</h2>
@@ -62,38 +59,41 @@ export default function InputPhase({ onStart }) {
       <div className="racers-list">
         {entries.map((entry, i) => (
           <div key={i} className="racer-tag">
-            <button
-              className="emoji-pick-btn"
-              onClick={() => setPickerIndex(pickerIndex === i ? null : i)}
-              title="Pick an emoji"
-            >
-              {entry.emoji || '🎲'}
-            </button>
+            <span className="racer-tag-emoji">{entry.emoji || '🎲'}</span>
             <span className="name">{entry.name}</span>
             <button className="remove" onClick={() => removeName(i)}>&times;</button>
-            {pickerIndex === i && (
-              <div className="emoji-picker">
-                {EMOJI_POOL.map((emoji) => (
-                  <button
-                    key={emoji}
-                    className={`emoji-option${entry.emoji === emoji ? ' selected' : ''}`}
-                    onClick={() => selectEmoji(i, emoji)}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-                {entry.emoji && (
-                  <button className="emoji-option emoji-random" onClick={() => clearEmoji(i)}>
-                    🎲
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         ))}
       </div>
 
       <div className="name-input-row">
+        <div className="emoji-input-wrapper">
+          <button
+            className="emoji-toggle-btn"
+            onClick={() => setShowPicker(!showPicker)}
+            title={selectedEmoji ? 'Change emoji' : 'Pick an emoji (or leave for random)'}
+          >
+            {selectedEmoji || '🎲'}
+          </button>
+          {showPicker && (
+            <div className="emoji-picker">
+              {EMOJI_POOL.map((emoji) => (
+                <button
+                  key={emoji}
+                  className={`emoji-option${selectedEmoji === emoji ? ' selected' : ''}`}
+                  onClick={() => handlePickEmoji(emoji)}
+                >
+                  {emoji}
+                </button>
+              ))}
+              {selectedEmoji && (
+                <button className="emoji-option emoji-random" onClick={() => handlePickEmoji(null)}>
+                  🎲 Random
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         <input
           ref={inputRef}
           type="text"

@@ -144,35 +144,39 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-.racer-tag .emoji {
-  font-size: 20px;
+.racer-tag-emoji {
+  font-size: 18px;
 }
 
-.emoji-pick-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  opacity: 0.8;
-  transition: opacity 0.15s, transform 0.15s;
-}
-
-.emoji-pick-btn:hover {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-.racer-tag {
+/* Emoji picker in input row */
+.emoji-input-wrapper {
   position: relative;
+}
+
+.emoji-toggle-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 22px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-toggle-btn:hover {
+  border-color: #a78bfa;
+  transform: scale(1.05);
 }
 
 .emoji-picker {
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 0;
-  margin-top: 6px;
+  margin-bottom: 8px;
   background: rgba(30, 30, 40, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
@@ -184,7 +188,7 @@
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.15s ease;
-  max-height: 240px;
+  max-height: 260px;
   overflow-y: auto;
   width: max-content;
 }
@@ -214,10 +218,6 @@
   font-size: 14px;
   color: rgba(255, 255, 255, 0.5);
   padding: 4px;
-}
-
-.emoji-option.emoji-random::after {
-  content: ' Random';
 }
 
 .racer-tag .remove {
