@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { EMOJI_POOL } from '../App'
 
-const MAX_RACERS = 10
+const MAX_RACERS = 20
 const STORAGE_KEY = 'emoji-racer-entries'
 
 function loadEntries() {
