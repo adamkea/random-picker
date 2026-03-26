@@ -12,11 +12,19 @@ function loadEntries() {
   return []
 }
 
+const DURATION_OPTIONS = [
+  { label: '15s', value: 15000 },
+  { label: '30s', value: 30000 },
+  { label: '1 min', value: 60000 },
+  { label: '1 min 30s', value: 90000 },
+]
+
 export default function InputPhase({ onStart }) {
   const [entries, setEntries] = useState(loadEntries) // { name, emoji: string|null }
   const [inputValue, setInputValue] = useState('')
   const [selectedEmoji, setSelectedEmoji] = useState(null)
   const [showPicker, setShowPicker] = useState(false)
+  const [duration, setDuration] = useState(15000)
   const inputRef = useRef(null)
 
   useEffect(() => {
@@ -143,9 +151,24 @@ export default function InputPhase({ onStart }) {
         </button>
       </div>
 
+      <div className="duration-selector">
+        <span className="duration-label">Race Length</span>
+        <div className="duration-options">
+          {DURATION_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              className={`duration-btn${duration === opt.value ? ' active' : ''}`}
+              onClick={() => setDuration(opt.value)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <button
         className="btn btn-start"
-        onClick={() => onStart(entries)}
+        onClick={() => onStart(entries, duration)}
         disabled={entries.length < 2}
       >
         {entries.length < 2 ? 'Add at least 2 racers' : `Start Race! (${entries.length} racers)`}

@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 
-const RACE_DURATION = 5000 // 5 seconds
 const TICK_INTERVAL = 30 // ~33fps
 
-export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish }) {
+export default function RaceTrack({ racers, phase, duration, onCountdownDone, onRaceFinish }) {
   const [countdownValue, setCountdownValue] = useState(3)
   const [positions, setPositions] = useState(() => racers.map(() => 0))
+  const [velocities, setVelocities] = useState(() => racers.map(() => 0))
   const raceRef = useRef(null)
   const winnerRef = useRef(null)
 
@@ -16,6 +16,7 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
 
     setCountdownValue(3)
     setPositions(racers.map(() => 0))
+    setVelocities(racers.map(() => 0))
 
     // Pre-determine winner
     winnerRef.current = racers[Math.floor(Math.random() * racers.length)]
@@ -32,42 +33,45 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
 
   // Race animation
   const startRace = useCallback(() => {
+    const raceDuration = duration || 5000
     const winnerIndex = racers.findIndex(r => r.id === winnerRef.current.id)
     const startTime = Date.now()
 
     // Generate random speed profiles for each racer
+    // Each racer gets a pre-computed set of speed segments to avoid per-tick randomness
     const profiles = racers.map((_, i) => {
       const isWinner = i === winnerIndex
       const baseSpeed = isWinner ? 0.85 + Math.random() * 0.15 : 0.5 + Math.random() * 0.35
-      const stutterPoints = Array.from({ length: 3 + Math.floor(Math.random() * 3) }, () => Math.random())
+      // Pre-compute burst info
       const burstPoint = 0.7 + Math.random() * 0.2
-      return { baseSpeed, stutterPoints, burstPoint, isWinner }
+      const burstMultiplier = isWinner ? 1.5 : 1.2 + Math.random() * 0.15
+      // Pre-compute loser final cap
+      const loserCap = 0.75 + Math.random() * 0.17
+      // Pre-compute speed variation segments (varying speed, always positive)
+      const segmentCount = 8 + Math.floor(Math.random() * 6)
+      const segments = Array.from({ length: segmentCount }, () => 0.6 + Math.random() * 0.8)
+      return { baseSpeed, burstPoint, burstMultiplier, loserCap, segments, segmentCount, isWinner }
     })
+
+    // Track max positions to ensure monotonic forward movement
+    const maxPositions = racers.map(() => 0)
 
     raceRef.current = setInterval(() => {
       const elapsed = Date.now() - startTime
-      const progress = Math.min(elapsed / RACE_DURATION, 1)
+      const progress = Math.min(elapsed / raceDuration, 1)
 
-      const newPositions = profiles.map((profile) => {
-        let speed = profile.baseSpeed
-
-        // Apply stutters
-        for (const sp of profile.stutterPoints) {
-          const dist = Math.abs(progress - sp)
-          if (dist < 0.05) {
-            speed *= 0.3 + dist * 10
-          }
-        }
+      const newPositions = profiles.map((profile, i) => {
+        // Get speed variation from pre-computed segments
+        const segIdx = Math.min(Math.floor(progress * profile.segmentCount), profile.segmentCount - 1)
+        let speed = profile.baseSpeed * profile.segments[segIdx]
 
         // Apply burst near finish
         if (progress > profile.burstPoint) {
-          speed *= 1.2 + (profile.isWinner ? 0.3 : Math.random() * 0.15)
+          speed *= profile.burstMultiplier
         }
 
-        // Calculate position with easing
+        // Calculate position
         let pos = progress * speed
-        // Add some wobble
-        pos += Math.sin(progress * 15 + profile.baseSpeed * 10) * 0.01
 
         // Winner must reach 1.0 at the end
         if (profile.isWinner) {
@@ -77,13 +81,20 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
             pos = Math.max(pos, (progress - 0.9) / 0.1 * (1 - pos) + pos)
           }
         } else {
-          pos = Math.min(pos, 0.75 + Math.random() * 0.15)
+          pos = Math.min(pos, profile.loserCap)
         }
 
-        return Math.min(Math.max(pos, 0), profile.isWinner && progress >= 1 ? 1 : 0.92)
+        pos = Math.min(Math.max(pos, 0), profile.isWinner && progress >= 1 ? 1 : 0.92)
+
+        // Enforce monotonic forward movement
+        maxPositions[i] = Math.max(maxPositions[i], pos)
+        return maxPositions[i]
       })
 
-      setPositions(newPositions)
+      setPositions(prev => {
+        setVelocities(newPositions.map((pos, i) => pos - (prev[i] || 0)))
+        return newPositions
+      })
 
       if (progress >= 1) {
         clearInterval(raceRef.current)
@@ -92,7 +103,7 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
         }, 400)
       }
     }, TICK_INTERVAL)
-  }, [racers, onRaceFinish])
+  }, [racers, duration, onRaceFinish])
 
   useEffect(() => {
     if (phase === 'racing') {
@@ -137,8 +148,11 @@ export default function RaceTrack({ racers, phase, onCountdownDone, onRaceFinish
       <div className="race-track">
         {racers.map((racer, i) => {
           const pos = positions[i] || 0
+          const vel = velocities[i] || 0
           const isFinished = pos >= 0.99
-          const isFast = pos > 0.5
+          // Scale threshold with duration so trails show at similar visual speeds
+          const speedThreshold = 0.003 * (5000 / (duration || 5000))
+          const isFast = vel > speedThreshold
 
           return (
             <motion.div
