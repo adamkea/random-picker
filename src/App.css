@@ -199,10 +199,10 @@
 .lane {
   display: flex;
   align-items: center;
-  height: 48px;
+  height: 56px;
   position: relative;
   border-radius: 8px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .lane:nth-child(odd) {
@@ -229,6 +229,7 @@
   flex: 1;
   position: relative;
   height: 100%;
+  overflow: hidden;
 }
 
 .racer-emoji {
