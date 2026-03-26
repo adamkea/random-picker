@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { EMOJI_POOL } from '../App'
+import { LOTTIE_POOL } from '../lottiePool'
+import LottieRacer from './LottieRacer'
 
 const MAX_RACERS = 20
 const STORAGE_KEY = 'emoji-racer-entries'
@@ -20,9 +21,9 @@ const DURATION_OPTIONS = [
 ]
 
 export default function InputPhase({ onStart }) {
-  const [entries, setEntries] = useState(loadEntries) // { name, emoji: string|null }
+  const [entries, setEntries] = useState(loadEntries) // { name, lottie: { id, src, label } }
   const [inputValue, setInputValue] = useState('')
-  const [selectedEmoji, setSelectedEmoji] = useState(null)
+  const [selectedAvatar, setSelectedAvatar] = useState(null)
   const [showPicker, setShowPicker] = useState(false)
   const [duration, setDuration] = useState(15000)
   const inputRef = useRef(null)
@@ -31,10 +32,10 @@ export default function InputPhase({ onStart }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
   }, [entries])
 
-  const randomUnusedEmoji = (currentEntries) => {
-    const used = new Set(currentEntries.map(e => e.emoji))
-    const available = EMOJI_POOL.filter(e => !used.has(e))
-    if (available.length === 0) return EMOJI_POOL[Math.floor(Math.random() * EMOJI_POOL.length)]
+  const randomUnusedAvatar = (currentEntries) => {
+    const usedIds = new Set(currentEntries.map(e => e.lottie?.id))
+    const available = LOTTIE_POOL.filter(l => !usedIds.has(l.id))
+    if (available.length === 0) return LOTTIE_POOL[Math.floor(Math.random() * LOTTIE_POOL.length)]
     return available[Math.floor(Math.random() * available.length)]
   }
 
@@ -42,11 +43,11 @@ export default function InputPhase({ onStart }) {
     const trimmed = inputValue.trim()
     if (!trimmed || entries.length >= MAX_RACERS) return
     setEntries(prev => {
-      const emoji = selectedEmoji || randomUnusedEmoji(prev)
-      return [...prev, { name: trimmed, emoji }]
+      const lottie = selectedAvatar || randomUnusedAvatar(prev)
+      return [...prev, { name: trimmed, lottie }]
     })
     setInputValue('')
-    setSelectedEmoji(null)
+    setSelectedAvatar(null)
     inputRef.current?.focus()
   }
 
@@ -74,7 +75,7 @@ export default function InputPhase({ onStart }) {
         let combined = [...prev]
         for (const name of names) {
           if (combined.length >= MAX_RACERS) break
-          combined.push({ name, emoji: randomUnusedEmoji(combined) })
+          combined.push({ name, lottie: randomUnusedAvatar(combined) })
         }
         return combined
       })
@@ -82,8 +83,8 @@ export default function InputPhase({ onStart }) {
     }
   }
 
-  const handlePickEmoji = (emoji) => {
-    setSelectedEmoji(emoji)
+  const handlePickAvatar = (lottie) => {
+    setSelectedAvatar(lottie)
     setShowPicker(false)
     inputRef.current?.focus()
   }
@@ -96,7 +97,9 @@ export default function InputPhase({ onStart }) {
       <div className="racers-list">
         {entries.map((entry, i) => (
           <div key={i} className="racer-tag">
-            <span className="racer-tag-emoji">{entry.emoji}</span>
+            <span className="racer-tag-emoji">
+              <LottieRacer src={entry.lottie?.src} size={22} />
+            </span>
             <span className="name">{entry.name}</span>
             <button className="remove" onClick={() => removeName(i)}>&times;</button>
           </div>
@@ -108,23 +111,28 @@ export default function InputPhase({ onStart }) {
           <button
             className="emoji-toggle-btn"
             onClick={() => setShowPicker(!showPicker)}
-            title={selectedEmoji ? 'Change emoji' : 'Pick an emoji (or leave for random)'}
+            title={selectedAvatar ? 'Change avatar' : 'Pick an avatar (or leave for random)'}
           >
-            {selectedEmoji || '🎲'}
+            {selectedAvatar ? (
+              <LottieRacer src={selectedAvatar.src} size={28} />
+            ) : (
+              '🎲'
+            )}
           </button>
           {showPicker && (
             <div className="emoji-picker">
-              {EMOJI_POOL.map((emoji) => (
+              {LOTTIE_POOL.map((lottie) => (
                 <button
-                  key={emoji}
-                  className={`emoji-option${selectedEmoji === emoji ? ' selected' : ''}`}
-                  onClick={() => handlePickEmoji(emoji)}
+                  key={lottie.id}
+                  className={`emoji-option${selectedAvatar?.id === lottie.id ? ' selected' : ''}`}
+                  onClick={() => handlePickAvatar(lottie)}
+                  title={lottie.label}
                 >
-                  {emoji}
+                  <LottieRacer src={lottie.src} size={36} />
                 </button>
               ))}
-              {selectedEmoji && (
-                <button className="emoji-option emoji-random" onClick={() => handlePickEmoji(null)}>
+              {selectedAvatar && (
+                <button className="emoji-option emoji-random" onClick={() => handlePickAvatar(null)}>
                   🎲 Random
                 </button>
               )}

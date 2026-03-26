@@ -145,7 +145,8 @@
 }
 
 .racer-tag-emoji {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* Emoji picker in input row */
@@ -182,13 +183,13 @@
   border-radius: 12px;
   padding: 8px;
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 4px;
   z-index: 10;
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.15s ease;
-  max-height: 260px;
+  max-height: 300px;
   overflow-y: auto;
   width: max-content;
 }
@@ -197,10 +198,12 @@
   background: none;
   border: 2px solid transparent;
   border-radius: 8px;
-  font-size: 22px;
-  padding: 6px;
+  padding: 4px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .emoji-option:hover {
@@ -351,9 +354,10 @@
 
 .racer-emoji {
   position: absolute;
-  font-size: 32px;
   z-index: 2;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+  display: flex;
+  align-items: center;
 }
 
 .racer-finished {
@@ -399,7 +403,9 @@
 }
 
 .winner-emoji {
-  font-size: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: winnerBounce 0.5s ease infinite alternate;
 }
 
@@ -471,7 +477,8 @@
 }
 
 .history-item .history-emoji {
-  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .history-item .history-name {
@@ -502,11 +509,13 @@
     width: 70px;
     font-size: 11px;
   }
-  .racer-emoji {
-    font-size: 24px;
+  .racer-emoji .lottie-racer {
+    width: 28px !important;
+    height: 28px !important;
   }
-  .winner-emoji {
-    font-size: 60px;
+  .winner-emoji .lottie-racer {
+    width: 60px !important;
+    height: 60px !important;
   }
   .winner-name {
     font-size: 28px;

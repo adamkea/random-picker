@@ -1,3 +1,5 @@
+import LottieRacer from './LottieRacer'
+
 export default function History({ items, onClear }) {
   return (
     <div className="history">
@@ -9,7 +11,13 @@ export default function History({ items, onClear }) {
         {items.map((item, i) => (
           <li key={i} className="history-item">
             <span className="history-num">#{items.length - i}</span>
-            <span className="history-emoji">{item.emoji}</span>
+            <span className="history-emoji">
+              {item.lottie ? (
+                <LottieRacer src={item.lottie.src} size={24} />
+              ) : (
+                item.emoji
+              )}
+            </span>
             <span className="history-name">{item.name}</span>
           </li>
         ))}

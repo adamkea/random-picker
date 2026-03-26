@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import LottieRacer from './LottieRacer'
 
 const TICK_INTERVAL = 30 // ~33fps
 
@@ -186,7 +187,7 @@ export default function RaceTrack({ racers, phase, duration, onCountdownDone, on
                     rotate: { duration: 0.4, ease: 'easeOut' },
                   }}
                 >
-                  {racer.emoji}
+                  <LottieRacer src={racer.lottie.src} size={36} speed={1 + Math.abs(vel) * 80} />
                 </motion.div>
                 <div className="finish-line" />
               </div>

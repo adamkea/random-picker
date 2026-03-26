@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
+import LottieRacer from './LottieRacer'
 
 export default function Result({ winner, onRerace, onNewRace }) {
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function Result({ winner, onRerace, onNewRace }) {
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}
       >
-        {winner.emoji}
+        <LottieRacer src={winner.lottie.src} size={80} />
       </motion.div>
       <motion.div
         className="winner-name"
