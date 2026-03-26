@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react'
+import { useRef, useCallback, useState } from 'react'
 import { io } from 'socket.io-client'
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || ''
@@ -8,76 +8,97 @@ export function useSocket() {
   const [connected, setConnected] = useState(false)
   const [playerId, setPlayerId] = useState(null)
   const [lobbyState, setLobbyState] = useState(null)
-  const [phase, setPhase] = useState(null) // lobby | countdown | racing | result
+  const [phase, setPhase] = useState(null)
   const [countdownValue, setCountdownValue] = useState(null)
   const [raceTick, setRaceTick] = useState(null)
   const [raceFinish, setRaceFinish] = useState(null)
-  const [effects, setEffects] = useState([]) // recent effect_applied events
+  const [effects, setEffects] = useState([])
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    const socket = io(SERVER_URL, {
-      transports: ['websocket', 'polling'],
-    })
-    socketRef.current = socket
-
-    socket.on('connect', () => setConnected(true))
-    socket.on('disconnect', () => setConnected(false))
-
-    socket.on('lobby_state', (state) => {
-      setLobbyState(state)
-      setPhase('lobby')
-    })
-
-    socket.on('phase', (p) => {
-      setPhase(p)
-      if (p === 'lobby') {
-        setRaceFinish(null)
-        setRaceTick(null)
-        setCountdownValue(null)
-        setEffects([])
+  const ensureConnected = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      // Already connected
+      if (socketRef.current?.connected) {
+        resolve(socketRef.current)
+        return
       }
+
+      // Already created but not yet connected — wait for it
+      if (socketRef.current) {
+        socketRef.current.once('connect', () => resolve(socketRef.current))
+        socketRef.current.once('connect_error', (err) => reject(new Error(`Cannot reach server: ${err.message}`)))
+        return
+      }
+
+      // Create new socket
+      const socket = io(SERVER_URL, {
+        transports: ['websocket', 'polling'],
+        timeout: 5000,
+      })
+      socketRef.current = socket
+
+      socket.on('connect', () => setConnected(true))
+      socket.on('disconnect', () => setConnected(false))
+
+      socket.on('lobby_state', (state) => {
+        setLobbyState(state)
+        setPhase('lobby')
+      })
+
+      socket.on('phase', (p) => {
+        setPhase(p)
+        if (p === 'lobby') {
+          setRaceFinish(null)
+          setRaceTick(null)
+          setCountdownValue(null)
+          setEffects([])
+        }
+      })
+
+      socket.on('countdown', (val) => setCountdownValue(val))
+      socket.on('race_tick', (data) => setRaceTick(data))
+
+      socket.on('race_finish', (data) => {
+        setRaceFinish(data)
+        setPhase('result')
+      })
+
+      socket.on('effect_applied', (effect) => {
+        setEffects(prev => [...prev.slice(-10), { ...effect, ts: Date.now() }])
+      })
+
+      socket.once('connect', () => resolve(socket))
+      socket.once('connect_error', (err) => {
+        reject(new Error(`Cannot reach server. Is it running? (${err.message})`))
+      })
     })
+  }, [])
 
-    socket.on('countdown', (val) => setCountdownValue(val))
-
-    socket.on('race_tick', (data) => setRaceTick(data))
-
-    socket.on('race_finish', (data) => {
-      setRaceFinish(data)
-      setPhase('result')
-    })
-
-    socket.on('effect_applied', (effect) => {
-      setEffects(prev => [...prev.slice(-10), { ...effect, ts: Date.now() }])
-    })
-
-    return () => {
-      socket.disconnect()
+  const disconnect = useCallback(() => {
+    if (socketRef.current) {
+      socketRef.current.disconnect()
+      socketRef.current = null
+      setConnected(false)
+      setPhase(null)
+      setLobbyState(null)
+      setPlayerId(null)
+      setError(null)
     }
   }, [])
 
-  const createRoom = useCallback((name) => {
+  const createRoom = useCallback(async (name) => {
+    setError(null)
+    const socket = await ensureConnected()
     return new Promise((resolve, reject) => {
-      socketRef.current?.emit('create_room', { name }, (res) => {
-        if (res.error) {
-          setError(res.error)
-          reject(res.error)
-        } else {
-          setPlayerId(res.playerId)
-          setError(null)
-          resolve(res)
-        }
-      })
-    })
-  }, [])
+      const timer = setTimeout(() => {
+        reject(new Error('Server did not respond. Is it running?'))
+      }, 5000)
 
-  const joinRoom = useCallback((code, name) => {
-    return new Promise((resolve, reject) => {
-      socketRef.current?.emit('join_room', { code, name }, (res) => {
+      socket.emit('create_room', { name }, (res) => {
+        clearTimeout(timer)
         if (res.error) {
           setError(res.error)
-          reject(res.error)
+          reject(new Error(res.error))
         } else {
           setPlayerId(res.playerId)
           setError(null)
@@ -85,7 +106,29 @@ export function useSocket() {
         }
       })
     })
-  }, [])
+  }, [ensureConnected])
+
+  const joinRoom = useCallback(async (code, name) => {
+    setError(null)
+    const socket = await ensureConnected()
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error('Server did not respond. Is it running?'))
+      }, 5000)
+
+      socket.emit('join_room', { code, name }, (res) => {
+        clearTimeout(timer)
+        if (res.error) {
+          setError(res.error)
+          reject(new Error(res.error))
+        } else {
+          setPlayerId(res.playerId)
+          setError(null)
+          resolve(res)
+        }
+      })
+    })
+  }, [ensureConnected])
 
   const setDuration = useCallback((duration) => {
     socketRef.current?.emit('set_duration', duration)
@@ -124,5 +167,6 @@ export function useSocket() {
     boost,
     sabotage,
     playAgain,
+    disconnect,
   }
 }

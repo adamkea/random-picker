@@ -25,7 +25,7 @@ function assignAvatars(entries) {
 }
 
 function App() {
-  // mode: 'select' | 'solo' | 'multiplayer-join' | 'multiplayer'
+  // mode: 'select' | 'solo' | 'host-name' | 'multiplayer-join' | 'multiplayer'
   const [mode, setMode] = useState('select')
 
   // Solo state
@@ -44,7 +44,8 @@ function App() {
 
   // Multiplayer state
   const socket = useSocket()
-  const [joinName, setJoinName] = useState('')
+  const [hostName, setHostName] = useState('')
+  const [connecting, setConnecting] = useState(false)
 
   // Check URL for room code on mount
   useEffect(() => {
@@ -52,8 +53,6 @@ function App() {
     const room = params.get('room')
     if (room && room.length === 4) {
       setMode('multiplayer-join')
-      // Store the code for SessionJoin to use
-      window.__pendingRoomCode = room.toUpperCase()
     }
   }, [])
 
@@ -96,19 +95,22 @@ function App() {
   }, [])
 
   // Multiplayer handlers
-  const handleHostMultiplayer = useCallback(async () => {
-    const name = prompt('Enter your name:')
-    if (!name?.trim()) return
+  const handleCreateRoom = useCallback(async (e) => {
+    e.preventDefault()
+    if (!hostName.trim() || connecting) return
+    setConnecting(true)
     try {
-      await socket.createRoom(name.trim())
+      await socket.createRoom(hostName.trim())
       setMode('multiplayer')
-    } catch {
-      // error is set in socket state
+    } catch (err) {
+      // error is shown via socket.error or we set it
+      console.error('Failed to create room:', err)
+    } finally {
+      setConnecting(false)
     }
-  }, [socket])
+  }, [hostName, connecting, socket])
 
   const handleJoinFromSelector = useCallback((code) => {
-    window.__pendingRoomCode = code
     setMode('multiplayer-join')
   }, [])
 
@@ -116,17 +118,19 @@ function App() {
     try {
       await socket.joinRoom(code, name)
       setMode('multiplayer')
-      // Clean up URL param
       window.history.replaceState({}, '', window.location.pathname)
-    } catch {
-      // error is set in socket state
+    } catch (err) {
+      console.error('Failed to join room:', err)
     }
   }, [socket])
 
   const handleBackToMenu = useCallback(() => {
+    socket.disconnect()
     setMode('select')
+    setHostName('')
+    setConnecting(false)
     window.history.replaceState({}, '', window.location.pathname)
-  }, [])
+  }, [socket])
 
   return (
     <div className="app">
@@ -138,9 +142,40 @@ function App() {
       {mode === 'select' && (
         <ModeSelector
           onSolo={() => setMode('solo')}
-          onMultiplayer={handleHostMultiplayer}
+          onMultiplayer={() => setMode('host-name')}
           onJoin={handleJoinFromSelector}
         />
+      )}
+
+      {/* Host name entry */}
+      {mode === 'host-name' && (
+        <>
+          <button className="btn btn-reset btn-back-menu" onClick={handleBackToMenu}>
+            &larr; Back
+          </button>
+          <div className="session-join">
+            <h2>Host a Race</h2>
+            <form onSubmit={handleCreateRoom}>
+              <input
+                type="text"
+                className="join-name-input"
+                placeholder="Your name"
+                maxLength={20}
+                value={hostName}
+                onChange={(e) => setHostName(e.target.value)}
+                autoFocus
+              />
+              <button
+                className="btn btn-start"
+                type="submit"
+                disabled={!hostName.trim() || connecting}
+              >
+                {connecting ? 'Connecting...' : 'Create Room'}
+              </button>
+              {socket.error && <p className="join-error">{socket.error}</p>}
+            </form>
+          </div>
+        </>
       )}
 
       {/* Solo mode -- unchanged from original */}
@@ -226,6 +261,14 @@ function App() {
               onPlayAgain={socket.playAgain}
               onBackToLobby={socket.playAgain}
             />
+          )}
+
+          {/* Show if mode is multiplayer but socket hasn't received lobby yet */}
+          {!socket.phase && !socket.lobbyState && (
+            <div className="session-join">
+              <p className="waiting-dots">Connecting...</p>
+              {socket.error && <p className="join-error">{socket.error}</p>}
+            </div>
           )}
         </>
       )}
