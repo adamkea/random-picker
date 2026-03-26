@@ -1,23 +1,11 @@
-// Lottie animation pool — replaces the old EMOJI_POOL
-// Each entry points to a .json (or .lottie) file in public/lottie/
-// Replace the placeholder files with real running character animations
-// downloaded from https://app.lottiefiles.com/
-
-const ANIMATION_URL = 'https://lottie.host/a4a4cff4-f497-4f51-9f08-5bc248eda4fb/whtJhgsjiU.lottie'
+// Lottie animation pool — each entry is a different color variant of the running character
 
 export const LOTTIE_POOL = [
-  { id: 'runner-1', src: ANIMATION_URL, label: 'Runner 1' },
-  { id: 'runner-2', src: ANIMATION_URL, label: 'Runner 2' },
-  { id: 'runner-3', src: ANIMATION_URL, label: 'Runner 3' },
-  { id: 'runner-4', src: ANIMATION_URL, label: 'Runner 4' },
-  { id: 'runner-5', src: ANIMATION_URL, label: 'Runner 5' },
-  { id: 'runner-6', src: ANIMATION_URL, label: 'Runner 6' },
-  { id: 'runner-7', src: ANIMATION_URL, label: 'Runner 7' },
-  { id: 'runner-8', src: ANIMATION_URL, label: 'Runner 8' },
-  { id: 'runner-9', src: ANIMATION_URL, label: 'Runner 9' },
-  { id: 'runner-10', src: ANIMATION_URL, label: 'Runner 10' },
-  { id: 'runner-11', src: ANIMATION_URL, label: 'Runner 11' },
-  { id: 'runner-12', src: ANIMATION_URL, label: 'Runner 12' },
+  { id: 'runner-original', src: 'https://lottie.host/a4a4cff4-f497-4f51-9f08-5bc248eda4fb/whtJhgsjiU.lottie', label: 'Original' },
+  { id: 'runner-green', src: 'https://lottie.host/e885378b-0ce3-47d4-9dcc-0c88d26e73eb/PYotBUsycE.lottie', label: 'Green' },
+  { id: 'runner-blue', src: 'https://lottie.host/4570fd28-21db-4f62-9de0-2b9bdb806a14/lIIraGN2Fm.lottie', label: 'Blue' },
+  { id: 'runner-pink', src: 'https://lottie.host/32de5796-2f17-44ca-850d-055b08105610/VX8wsxExl1.lottie', label: 'Pink' },
+  { id: 'runner-yellow', src: 'https://lottie.host/773e71b4-71e2-49e1-bc21-844d7f5b3172/GgS4B0PYYt.lottie', label: 'Yellow' },
 ]
 
 export function getLottieById(id) {
