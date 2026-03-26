@@ -202,7 +202,7 @@
   height: 48px;
   position: relative;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .lane:nth-child(odd) {
