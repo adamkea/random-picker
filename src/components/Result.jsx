@@ -38,7 +38,7 @@ export default function Result({ winner, onRerace, onNewRace }) {
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}
       >
-        <LottieRacer src={winner.lottie.src} size={80} />
+        <LottieRacer src={winner.lottie.src} size={140} />
       </motion.div>
       <motion.div
         className="winner-name"

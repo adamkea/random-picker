@@ -98,7 +98,7 @@ export default function InputPhase({ onStart }) {
         {entries.map((entry, i) => (
           <div key={i} className="racer-tag">
             <span className="racer-tag-emoji">
-              <LottieRacer src={entry.lottie?.src} size={22} />
+              <LottieRacer src={entry.lottie?.src} size={32} />
             </span>
             <span className="name">{entry.name}</span>
             <button className="remove" onClick={() => removeName(i)}>&times;</button>
@@ -114,7 +114,7 @@ export default function InputPhase({ onStart }) {
             title={selectedAvatar ? 'Change avatar' : 'Pick an avatar (or leave for random)'}
           >
             {selectedAvatar ? (
-              <LottieRacer src={selectedAvatar.src} size={28} />
+              <LottieRacer src={selectedAvatar.src} size={38} />
             ) : (
               '🎲'
             )}
@@ -128,7 +128,7 @@ export default function InputPhase({ onStart }) {
                   onClick={() => handlePickAvatar(lottie)}
                   title={lottie.label}
                 >
-                  <LottieRacer src={lottie.src} size={36} />
+                  <LottieRacer src={lottie.src} size={48} />
                 </button>
               ))}
               {selectedAvatar && (

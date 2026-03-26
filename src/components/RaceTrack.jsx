@@ -187,7 +187,7 @@ export default function RaceTrack({ racers, phase, duration, onCountdownDone, on
                     rotate: { duration: 0.4, ease: 'easeOut' },
                   }}
                 >
-                  <LottieRacer src={racer.lottie.src} size={36} speed={1 + Math.abs(vel) * 80} />
+                  <LottieRacer src={racer.lottie.src} size={56} speed={1 + Math.abs(vel) * 80} />
                 </motion.div>
                 <div className="finish-line" />
               </div>

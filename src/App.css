@@ -318,7 +318,7 @@
 .lane {
   display: flex;
   align-items: center;
-  height: 56px;
+  height: 68px;
   position: relative;
   border-radius: 8px;
   overflow: hidden;

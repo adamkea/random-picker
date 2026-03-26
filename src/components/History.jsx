@@ -13,7 +13,7 @@ export default function History({ items, onClear }) {
             <span className="history-num">#{items.length - i}</span>
             <span className="history-emoji">
               {item.lottie ? (
-                <LottieRacer src={item.lottie.src} size={24} />
+                <LottieRacer src={item.lottie.src} size={36} />
               ) : (
                 item.emoji
               )}
