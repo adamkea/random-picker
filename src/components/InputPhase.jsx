@@ -23,10 +23,20 @@ export default function InputPhase({ onStart }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
   }, [entries])
 
+  const randomUnusedEmoji = (currentEntries) => {
+    const used = new Set(currentEntries.map(e => e.emoji))
+    const available = EMOJI_POOL.filter(e => !used.has(e))
+    if (available.length === 0) return EMOJI_POOL[Math.floor(Math.random() * EMOJI_POOL.length)]
+    return available[Math.floor(Math.random() * available.length)]
+  }
+
   const addName = () => {
     const trimmed = inputValue.trim()
     if (!trimmed || entries.length >= MAX_RACERS) return
-    setEntries(prev => [...prev, { name: trimmed, emoji: selectedEmoji }])
+    setEntries(prev => {
+      const emoji = selectedEmoji || randomUnusedEmoji(prev)
+      return [...prev, { name: trimmed, emoji }]
+    })
     setInputValue('')
     setSelectedEmoji(null)
     inputRef.current?.focus()
@@ -47,13 +57,19 @@ export default function InputPhase({ onStart }) {
     const text = e.clipboardData.getData('text')
     if (text.includes('\n') || text.includes(',')) {
       e.preventDefault()
-      const pasted = text
+      const names = text
         .split(/[\n,]+/)
         .map(s => s.trim())
         .filter(Boolean)
         .slice(0, MAX_RACERS - entries.length)
-        .map(name => ({ name, emoji: null }))
-      setEntries(prev => [...prev, ...pasted].slice(0, MAX_RACERS))
+      setEntries(prev => {
+        let combined = [...prev]
+        for (const name of names) {
+          if (combined.length >= MAX_RACERS) break
+          combined.push({ name, emoji: randomUnusedEmoji(combined) })
+        }
+        return combined
+      })
       setInputValue('')
     }
   }
@@ -72,7 +88,7 @@ export default function InputPhase({ onStart }) {
       <div className="racers-list">
         {entries.map((entry, i) => (
           <div key={i} className="racer-tag">
-            <span className="racer-tag-emoji">{entry.emoji || '🎲'}</span>
+            <span className="racer-tag-emoji">{entry.emoji}</span>
             <span className="name">{entry.name}</span>
             <button className="remove" onClick={() => removeName(i)}>&times;</button>
           </div>
