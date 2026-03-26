@@ -4,7 +4,7 @@
 // downloaded from https://app.lottiefiles.com/
 
 export const LOTTIE_POOL = [
-  { id: 'runner-1', src: '/lottie/runner-1.json', label: 'Red Runner' },
+  { id: 'runner-1', src: 'https://lottie.host/a4a4cff4-f497-4f51-9f08-5bc248eda4fb/whtJhgsjiU.lottie', label: 'Runner' },
   { id: 'runner-2', src: '/lottie/runner-2.json', label: 'Blue Sprinter' },
   { id: 'runner-3', src: '/lottie/runner-3.json', label: 'Green Dasher' },
   { id: 'runner-4', src: '/lottie/runner-4.json', label: 'Gold Flash' },
