@@ -23,8 +23,6 @@ const DURATION_OPTIONS = [
 export default function InputPhase({ onStart }) {
   const [entries, setEntries] = useState(loadEntries) // { name, lottie: { id, src, label } }
   const [inputValue, setInputValue] = useState('')
-  const [selectedAvatar, setSelectedAvatar] = useState(null)
-  const [showPicker, setShowPicker] = useState(false)
   const [duration, setDuration] = useState(15000)
   const inputRef = useRef(null)
 
@@ -43,11 +41,10 @@ export default function InputPhase({ onStart }) {
     const trimmed = inputValue.trim()
     if (!trimmed || entries.length >= MAX_RACERS) return
     setEntries(prev => {
-      const lottie = selectedAvatar || randomUnusedAvatar(prev)
+      const lottie = randomUnusedAvatar(prev)
       return [...prev, { name: trimmed, lottie }]
     })
     setInputValue('')
-    setSelectedAvatar(null)
     inputRef.current?.focus()
   }
 
@@ -83,12 +80,6 @@ export default function InputPhase({ onStart }) {
     }
   }
 
-  const handlePickAvatar = (lottie) => {
-    setSelectedAvatar(lottie)
-    setShowPicker(false)
-    inputRef.current?.focus()
-  }
-
   return (
     <div className="input-phase">
       <h2>Enter Racers</h2>
@@ -107,38 +98,6 @@ export default function InputPhase({ onStart }) {
       </div>
 
       <div className="name-input-row">
-        <div className="emoji-input-wrapper">
-          <button
-            className="emoji-toggle-btn"
-            onClick={() => setShowPicker(!showPicker)}
-            title={selectedAvatar ? 'Change avatar' : 'Pick an avatar (or leave for random)'}
-          >
-            {selectedAvatar ? (
-              <LottieRacer src={selectedAvatar.src} size={38} />
-            ) : (
-              '🎲'
-            )}
-          </button>
-          {showPicker && (
-            <div className="emoji-picker">
-              {LOTTIE_POOL.map((lottie) => (
-                <button
-                  key={lottie.id}
-                  className={`emoji-option${selectedAvatar?.id === lottie.id ? ' selected' : ''}`}
-                  onClick={() => handlePickAvatar(lottie)}
-                  title={lottie.label}
-                >
-                  <LottieRacer src={lottie.src} size={48} />
-                </button>
-              ))}
-              {selectedAvatar && (
-                <button className="emoji-option emoji-random" onClick={() => handlePickAvatar(null)}>
-                  🎲 Random
-                </button>
-              )}
-            </div>
-          )}
-        </div>
         <input
           ref={inputRef}
           type="text"
