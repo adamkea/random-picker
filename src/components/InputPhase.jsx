@@ -1,14 +1,27 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { EMOJI_POOL } from '../App'
 
 const MAX_RACERS = 10
+const STORAGE_KEY = 'emoji-racer-entries'
+
+function loadEntries() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY))
+    if (Array.isArray(saved)) return saved
+  } catch {}
+  return []
+}
 
 export default function InputPhase({ onStart }) {
-  const [entries, setEntries] = useState([]) // { name, emoji: string|null }
+  const [entries, setEntries] = useState(loadEntries) // { name, emoji: string|null }
   const [inputValue, setInputValue] = useState('')
   const [selectedEmoji, setSelectedEmoji] = useState(null)
   const [showPicker, setShowPicker] = useState(false)
   const inputRef = useRef(null)
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries))
+  }, [entries])
 
   const addName = () => {
     const trimmed = inputValue.trim()

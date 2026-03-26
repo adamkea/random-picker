@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import InputPhase from './components/InputPhase'
 import RaceTrack from './components/RaceTrack'
 import Result from './components/Result'
@@ -40,7 +40,17 @@ function App() {
   const [racers, setRacers] = useState([])
   const [names, setNames] = useState([])
   const [winner, setWinner] = useState(null)
-  const [history, setHistory] = useState([])
+  const [history, setHistory] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('emoji-racer-history'))
+      if (Array.isArray(saved)) return saved
+    } catch {}
+    return []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('emoji-racer-history', JSON.stringify(history))
+  }, [history])
 
   const handleStartRace = useCallback((entries) => {
     const assigned = assignEmojis(entries)
