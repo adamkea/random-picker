@@ -3,8 +3,12 @@ import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import LottieRacer from './LottieRacer'
 
-export default function Result({ winner, onRerace, onNewRace }) {
+export default function Result({ winner, raceGoal = 'winner', onRerace, onNewRace }) {
+  const isLoser = raceGoal === 'loser'
+
   useEffect(() => {
+    if (isLoser) return // No confetti for losers
+
     // Fire confetti bursts
     const fire = (opts) => {
       confetti({
@@ -23,25 +27,25 @@ export default function Result({ winner, onRerace, onNewRace }) {
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [])
+  }, [isLoser])
 
   return (
     <motion.div
-      className="result-container"
+      className={`result-container${isLoser ? ' result-loser' : ''}`}
       initial={{ opacity: 0, y: 40, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 200, damping: 20 }}
     >
       <motion.div
-        className="winner-emoji"
-        initial={{ scale: 0, rotate: -180 }}
+        className={isLoser ? 'loser-emoji' : 'winner-emoji'}
+        initial={{ scale: 0, rotate: isLoser ? 0 : -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}
       >
         <LottieRacer src={winner.lottie.src} size={140} playing={true} />
       </motion.div>
       <motion.div
-        className="winner-name"
+        className={isLoser ? 'loser-name' : 'winner-name'}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.4 }}
@@ -49,12 +53,12 @@ export default function Result({ winner, onRerace, onNewRace }) {
         {winner.name}
       </motion.div>
       <motion.div
-        className="winner-label"
+        className={isLoser ? 'loser-label' : 'winner-label'}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.3 }}
       >
-        wins the race! 🏆
+        {isLoser ? 'loses the race! 💀' : 'wins the race! 🏆'}
       </motion.div>
       <motion.div
         className="result-actions"

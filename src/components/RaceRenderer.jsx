@@ -13,9 +13,6 @@ export default function RaceRenderer({ racers, positions, velocities, duration }
         const pos = positions[i] || 0
         const vel = velocities[i] || 0
         const isFinished = pos >= 0.99
-        const isMoving = Math.abs(vel) > 0.0001
-        const speedThreshold = 0.003 * (5000 / (duration || 5000))
-        const isFast = vel > speedThreshold
         const yOffset = (i / racers.length) * (trackHeight - RACER_SIZE - 24)
 
         return (
@@ -40,17 +37,10 @@ export default function RaceRenderer({ racers, positions, velocities, duration }
               <LottieRacer
                 src={racer.lottie.src}
                 size={RACER_SIZE}
-                speed={1 + Math.abs(vel) * 80}
-                playing={isMoving}
+                speed={Math.max(0.3, 1 + Math.abs(vel) * 80)}
+                playing={true}
               />
             </div>
-            {isFast && (
-              <motion.div
-                className="speed-trail"
-                animate={{ opacity: [0.6, 0.2, 0.6] }}
-                transition={{ duration: 0.4, repeat: Infinity }}
-              />
-            )}
           </motion.div>
         )
       })}

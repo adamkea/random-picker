@@ -24,6 +24,7 @@ export default function InputPhase({ onStart }) {
   const [entries, setEntries] = useState(loadEntries) // { name, lottie: { id, src, label } }
   const [inputValue, setInputValue] = useState('')
   const [duration, setDuration] = useState(15000)
+  const [raceGoal, setRaceGoal] = useState('winner') // 'winner' | 'loser'
   const inputRef = useRef(null)
 
   useEffect(() => {
@@ -133,9 +134,27 @@ export default function InputPhase({ onStart }) {
         </div>
       </div>
 
+      <div className="duration-selector">
+        <span className="duration-label">Show</span>
+        <div className="duration-options">
+          <button
+            className={`duration-btn${raceGoal === 'winner' ? ' active' : ''}`}
+            onClick={() => setRaceGoal('winner')}
+          >
+            Winner
+          </button>
+          <button
+            className={`duration-btn${raceGoal === 'loser' ? ' active' : ''}`}
+            onClick={() => setRaceGoal('loser')}
+          >
+            Loser
+          </button>
+        </div>
+      </div>
+
       <button
         className="btn btn-start"
-        onClick={() => onStart(entries, duration)}
+        onClick={() => onStart(entries, duration, raceGoal)}
         disabled={entries.length < 2}
       >
         {entries.length < 2 ? 'Add at least 2 racers' : `Start Race! (${entries.length} racers)`}
