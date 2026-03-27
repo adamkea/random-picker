@@ -26,9 +26,14 @@ app.get('/{*path}', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
 })
 
+const defaultOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:4173']
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? [...defaultOrigins, ...process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())]
+  : defaultOrigins
+
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:4173'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
   },
 })

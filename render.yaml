@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: random-picker-server
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        sync: false  # Set this to your Vercel frontend URL, e.g. https://random-picker-tawny.vercel.app
