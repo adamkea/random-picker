@@ -187,18 +187,17 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
   if (phase === 'countdown') {
     return (
       <div className="race-container">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={countdownValue}
             className={`countdown ${countdownValue === 'GO!' ? 'go' : ''}`}
-            initial={{ scale: 2.5, opacity: 0, rotate: -15 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            exit={{ scale: 0.3, opacity: 0, rotate: 15, filter: 'blur(8px)' }}
+            initial={{ scale: 2.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
             transition={{
-              type: 'spring',
-              stiffness: 300,
-              damping: 20,
-              mass: 0.8,
+              type: 'tween',
+              duration: 0.3,
+              ease: 'easeOut',
             }}
           >
             {countdownValue}
