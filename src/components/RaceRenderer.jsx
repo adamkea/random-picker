@@ -1,10 +1,10 @@
 import { motion } from 'motion/react'
 import LottieRacer from './LottieRacer'
 
-const RACER_SIZE = 96
+const RACER_SIZE = 160
 
 export default function RaceRenderer({ racers, positions, velocities, duration }) {
-  const trackHeight = Math.max(250, racers.length * 80)
+  const trackHeight = Math.max(400, racers.length * 130)
 
   return (
     <div className="race-track" style={{ height: trackHeight }}>
