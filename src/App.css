@@ -417,6 +417,40 @@
   margin-bottom: 20px;
 }
 
+/* Loser result styles */
+.result-loser {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.loser-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: loserDroop 1.5s ease infinite alternate;
+}
+
+@keyframes loserDroop {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(5px) rotate(2deg); }
+}
+
+.loser-name {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 12px 0 4px;
+  background: linear-gradient(135deg, #ef4444, #dc2626, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.loser-label {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+}
+
 .result-actions {
   display: flex;
   gap: 12px;

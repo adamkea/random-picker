@@ -34,6 +34,7 @@ function App() {
   const [names, setNames] = useState([])
   const [duration, setDuration] = useState(30000)
   const [winner, setWinner] = useState(null)
+  const [raceGoal, setRaceGoal] = useState('winner')
   const [history, setHistory] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('emoji-racer-history'))
@@ -61,11 +62,12 @@ function App() {
   }, [history])
 
   // Solo handlers
-  const handleStartRace = useCallback((entries, raceDuration) => {
+  const handleStartRace = useCallback((entries, raceDuration, goal = 'winner') => {
     const assigned = assignAvatars(entries)
     setNames(entries)
     setRacers(assigned)
     setDuration(raceDuration)
+    setRaceGoal(goal)
     setWinner(null)
     setPhase('countdown')
   }, [])
@@ -81,8 +83,8 @@ function App() {
   }, [])
 
   const handleRerace = useCallback(() => {
-    handleStartRace(names)
-  }, [names, handleStartRace])
+    handleStartRace(names, duration, raceGoal)
+  }, [names, duration, raceGoal, handleStartRace])
 
   const handleNewRace = useCallback(() => {
     setPhase('input')
@@ -195,6 +197,7 @@ function App() {
               racers={racers}
               phase={phase}
               duration={duration}
+              raceGoal={raceGoal}
               onCountdownDone={handleCountdownDone}
               onRaceFinish={handleRaceFinish}
             />
@@ -203,6 +206,7 @@ function App() {
           {phase === 'result' && winner && (
             <Result
               winner={winner}
+              raceGoal={raceGoal}
               onRerace={handleRerace}
               onNewRace={handleNewRace}
             />
