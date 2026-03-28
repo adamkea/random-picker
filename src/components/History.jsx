@@ -2,23 +2,28 @@ import LottieRacer from './LottieRacer'
 
 export default function History({ items, onClear }) {
   return (
-    <div className="history">
-      <h3>
+    <div className="w-full bg-white/[.04] rounded-2xl p-8 border border-white/[.08]">
+      <h3 className="text-base font-semibold mb-4 text-white/60">
         Race History
-        <button className="history-clear" onClick={onClear}>Clear</button>
+        <button
+          className="float-right bg-transparent border-0 text-white/30 cursor-pointer text-xs hover:text-red-light transition-colors"
+          onClick={onClear}
+        >
+          Clear
+        </button>
       </h3>
-      <ul className="history-list">
+      <ul className="list-none flex flex-col gap-1.5">
         {items.map((item, i) => (
-          <li key={i} className="history-item">
-            <span className="history-num">#{items.length - i}</span>
-            <span className="history-emoji">
+          <li key={i} className="flex items-center gap-2.5 px-3 py-2 bg-white/[.04] rounded-lg text-sm">
+            <span className="text-white/30 text-xs min-w-[20px]">#{items.length - i}</span>
+            <span className="inline-flex items-center">
               {item.lottie ? (
                 <LottieRacer src={item.lottie.src} size={36} />
               ) : (
                 item.emoji
               )}
             </span>
-            <span className="history-name">{item.name}</span>
+            <span className="font-semibold">{item.name}</span>
           </li>
         ))}
       </ul>

@@ -9,7 +9,6 @@ export default function PlayerControls({ playerId, players, boostMeter, onBoost,
 
   const otherPlayers = players.filter(p => p.id !== playerId)
 
-  // Track if we're being sabotaged
   const isSabotaged = effects.some(
     e => e.type === 'sabotage' && e.targetId === playerId && Date.now() - e.ts < 2000
   )
@@ -45,34 +44,42 @@ export default function PlayerControls({ playerId, players, boostMeter, onBoost,
   const meterPercent = Math.round(boostMeter || 0)
 
   return (
-    <div className={`player-controls ${isSabotaged ? 'sabotaged' : ''}`}>
+    <div className={`w-full p-6 mt-4 bg-white/[.07] rounded-2xl border border-white/[.12] backdrop-blur-xl ${isSabotaged ? 'animate-sabotage-shake' : ''}`}>
       {/* Boost meter */}
-      <div className="boost-meter-container">
-        <div className="boost-meter-bar" style={{ width: `${meterPercent}%` }} />
-        <span className="boost-meter-text">{meterPercent}</span>
+      <div className="relative h-6 bg-white/10 rounded-full overflow-hidden mb-3">
+        <div
+          className="h-full bg-gradient-to-r from-green-primary to-green-deep rounded-full transition-[width] duration-100"
+          style={{ width: `${meterPercent}%` }}
+        />
+        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
+          {meterPercent}
+        </span>
       </div>
 
-      <div className="controls-row">
-        {/* Sabotage button */}
-        <div className="sabotage-area">
+      <div className="flex gap-3 items-stretch max-[600px]:flex-col">
+        {/* Sabotage area */}
+        <div className="flex-1">
           {showTargets ? (
-            <div className="target-picker">
+            <div className="flex flex-col gap-1.5">
               {otherPlayers.map(p => (
                 <button
                   key={p.id}
-                  className="btn btn-target"
+                  className="px-2.5 py-2 rounded-[10px] border-2 border-white/20 bg-red-light/20 text-white text-sm font-semibold cursor-pointer transition-all hover:bg-red-light/40 hover:border-red-light"
                   onClick={() => handleSabotage(p.id)}
                 >
                   {p.name}
                 </button>
               ))}
-              <button className="btn-target-cancel" onClick={() => setShowTargets(false)}>
+              <button
+                className="p-1.5 bg-transparent border-0 text-white/40 cursor-pointer text-sm hover:text-white/70 transition-colors"
+                onClick={() => setShowTargets(false)}
+              >
                 ✕
               </button>
             </div>
           ) : (
             <button
-              className="btn btn-sabotage"
+              className="w-full h-full text-base font-bold p-4 rounded-2xl border-0 bg-gradient-to-br from-red-light to-red-deep text-white cursor-pointer transition-all select-none hover:enabled:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={sabotageCooldown > 0}
               onClick={() => setShowTargets(true)}
             >
@@ -85,7 +92,7 @@ export default function PlayerControls({ playerId, players, boostMeter, onBoost,
 
         {/* Boost button */}
         <button
-          className="btn btn-boost"
+          className="flex-[2] text-[24px] max-[600px]:text-lg font-extrabold p-5 max-[600px]:p-4 rounded-2xl border-0 bg-gradient-to-br from-green-primary to-green-deep text-white cursor-pointer transition-all select-none touch-manipulation hover:enabled:scale-[1.02] hover:enabled:shadow-[0_4px_20px_rgba(52,211,153,0.4)] active:enabled:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
           onClick={handleBoost}
           disabled={meterPercent < 15}
         >
@@ -94,7 +101,9 @@ export default function PlayerControls({ playerId, players, boostMeter, onBoost,
       </div>
 
       {/* Sabotage hit overlay */}
-      {isSabotaged && <div className="sabotage-flash" />}
+      {isSabotaged && (
+        <div className="fixed inset-0 bg-red-primary/30 pointer-events-none z-[100] animate-flash-fade" />
+      )}
     </div>
   )
 }

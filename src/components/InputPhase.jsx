@@ -20,11 +20,14 @@ const DURATION_OPTIONS = [
   { label: '1 min 30s', value: 90000 },
 ]
 
+const inputBase = 'flex-1 px-4 py-3 rounded-[10px] border-2 border-white/15 bg-white/[.08] text-white text-base outline-none focus:border-purple-primary placeholder:text-white/35 transition-colors disabled:opacity-50'
+const btnAdd = 'px-6 py-3 rounded-[10px] bg-gradient-to-br from-purple-primary to-purple-deep text-white font-semibold cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0'
+
 export default function InputPhase({ onStart }) {
-  const [entries, setEntries] = useState(loadEntries) // { name, lottie: { id, src, label } }
+  const [entries, setEntries] = useState(loadEntries)
   const [inputValue, setInputValue] = useState('')
   const [duration, setDuration] = useState(15000)
-  const [raceGoal, setRaceGoal] = useState('winner') // 'winner' | 'loser'
+  const [raceGoal, setRaceGoal] = useState('winner')
   const inputRef = useRef(null)
 
   useEffect(() => {
@@ -81,27 +84,42 @@ export default function InputPhase({ onStart }) {
     }
   }
 
-  return (
-    <div className="input-phase">
-      <h2>Enter Racers</h2>
-      <p className="racer-count">{entries.length}/{MAX_RACERS} racers — paste a comma or newline-separated list, or add one at a time</p>
+  const durationBtnClass = (active) =>
+    `px-4 py-2 rounded-lg border-2 text-sm font-semibold cursor-pointer transition-all ${
+      active
+        ? 'border-purple-primary bg-purple-primary/20 text-white'
+        : 'border-white/15 bg-white/[.06] text-white/60 hover:border-white/30 hover:text-white'
+    }`
 
-      <div className="racers-list">
+  return (
+    <div className="w-full bg-white/[.07] rounded-2xl p-10 backdrop-blur-xl border border-white/[.12]">
+      <h2 className="text-2xl mb-5 font-semibold">Enter Racers</h2>
+      <p className="text-[13px] text-white/45 mb-3">
+        {entries.length}/{MAX_RACERS} racers — paste a comma or newline-separated list, or add one at a time
+      </p>
+
+      <div className="flex flex-wrap gap-2 mb-4 min-h-[40px]">
         {entries.map((entry, i) => (
-          <div key={i} className="racer-tag">
-            <span className="racer-tag-emoji">
+          <div key={i} className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-2 text-[15px] border border-white/15 animate-fade-in">
+            <span className="inline-flex items-center">
               <LottieRacer src={entry.lottie?.src} size={32} />
             </span>
-            <span className="name">{entry.name}</span>
-            <button className="remove" onClick={() => removeName(i)}>&times;</button>
+            <span>{entry.name}</span>
+            <button
+              className="bg-transparent border-0 text-white/50 cursor-pointer text-base px-0.5 leading-none hover:text-red-light transition-colors"
+              onClick={() => removeName(i)}
+            >
+              &times;
+            </button>
           </div>
         ))}
       </div>
 
-      <div className="name-input-row">
+      <div className="flex gap-3 mb-5">
         <input
           ref={inputRef}
           type="text"
+          className={inputBase}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -111,7 +129,7 @@ export default function InputPhase({ onStart }) {
           autoFocus
         />
         <button
-          className="btn btn-add"
+          className={btnAdd}
           onClick={addName}
           disabled={!inputValue.trim() || entries.length >= MAX_RACERS}
         >
@@ -119,13 +137,13 @@ export default function InputPhase({ onStart }) {
         </button>
       </div>
 
-      <div className="duration-selector">
-        <span className="duration-label">Race Length</span>
-        <div className="duration-options">
+      <div className="flex items-center gap-4 mb-4 mt-2">
+        <span className="text-sm font-semibold text-white/60 whitespace-nowrap">Race Length</span>
+        <div className="flex gap-1.5">
           {DURATION_OPTIONS.map(opt => (
             <button
               key={opt.value}
-              className={`duration-btn${duration === opt.value ? ' active' : ''}`}
+              className={durationBtnClass(duration === opt.value)}
               onClick={() => setDuration(opt.value)}
             >
               {opt.label}
@@ -134,17 +152,17 @@ export default function InputPhase({ onStart }) {
         </div>
       </div>
 
-      <div className="duration-selector">
-        <span className="duration-label">Show</span>
-        <div className="duration-options">
+      <div className="flex items-center gap-4 mb-4 mt-2">
+        <span className="text-sm font-semibold text-white/60 whitespace-nowrap">Show</span>
+        <div className="flex gap-1.5">
           <button
-            className={`duration-btn${raceGoal === 'winner' ? ' active' : ''}`}
+            className={durationBtnClass(raceGoal === 'winner')}
             onClick={() => setRaceGoal('winner')}
           >
             Winner
           </button>
           <button
-            className={`duration-btn${raceGoal === 'loser' ? ' active' : ''}`}
+            className={durationBtnClass(raceGoal === 'loser')}
             onClick={() => setRaceGoal('loser')}
           >
             Loser
@@ -153,7 +171,7 @@ export default function InputPhase({ onStart }) {
       </div>
 
       <button
-        className="btn btn-start"
+        className="w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-4 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-3 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
         onClick={() => onStart(entries, duration, raceGoal)}
         disabled={entries.length < 2}
       >
