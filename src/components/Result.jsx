@@ -7,9 +7,8 @@ export default function Result({ winner, raceGoal = 'winner', onRerace, onNewRac
   const isLoser = raceGoal === 'loser'
 
   useEffect(() => {
-    if (isLoser) return // No confetti for losers
+    if (isLoser) return
 
-    // Fire confetti bursts
     const fire = (opts) => {
       confetti({
         particleCount: 80,
@@ -29,47 +28,64 @@ export default function Result({ winner, raceGoal = 'winner', onRerace, onNewRac
     return () => clearTimeout(timer)
   }, [isLoser])
 
+  const containerClass = `w-full text-center bg-white/[.06] rounded-2xl p-8 border ${
+    isLoser ? 'border-red-primary/30 bg-red-primary/[.06]' : 'border-white/15'
+  }`
+
   return (
     <motion.div
-      className={`result-container${isLoser ? ' result-loser' : ''}`}
+      className={containerClass}
       initial={{ opacity: 0, y: 40, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 200, damping: 20 }}
     >
       <motion.div
-        className={isLoser ? 'loser-emoji' : 'winner-emoji'}
+        className={`${isLoser ? 'loser-emoji' : 'winner-emoji'} flex items-center justify-center`}
         initial={{ scale: 0, rotate: isLoser ? 0 : -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}
       >
         <LottieRacer src={winner.lottie.src} size={140} playing={true} />
       </motion.div>
+
       <motion.div
-        className={isLoser ? 'loser-name' : 'winner-name'}
+        className={`text-[52px] max-[600px]:text-[36px] font-bold my-4 bg-clip-text text-transparent ${
+          isLoser
+            ? 'bg-gradient-to-br from-red-primary via-red-deep to-red-primary'
+            : 'bg-gradient-to-br from-gold-primary via-gold-deep to-gold-primary'
+        }`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.4 }}
       >
         {winner.name}
       </motion.div>
+
       <motion.div
-        className={isLoser ? 'loser-label' : 'winner-label'}
+        className="text-lg text-white/50 mb-5"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.3 }}
       >
         {isLoser ? 'loses the race! 💀' : 'wins the race! 🏆'}
       </motion.div>
+
       <motion.div
-        className="result-actions"
+        className="flex gap-3 justify-center mt-4"
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.55, duration: 0.3 }}
       >
-        <button className="btn btn-rerace" onClick={onRerace}>
+        <button
+          className="bg-gradient-to-br from-gold-primary to-gold-deep text-black text-lg font-bold px-8 py-3 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all"
+          onClick={onRerace}
+        >
           Race Again
         </button>
-        <button className="btn btn-reset" onClick={onNewRace}>
+        <button
+          className="px-6 py-3 rounded-[10px] bg-white/10 border border-white/20 text-white font-semibold cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all"
+          onClick={onNewRace}
+        >
           New Racers
         </button>
       </motion.div>

@@ -45,16 +45,19 @@ export default function MultiplayerRace({
     prevTickRef.current = raceTick
   }, [raceTick])
 
-  // Get my boost meter
   const myBoostMeter = raceTick?.boostMeters?.[playerId] || 100
 
   if (phase === 'countdown') {
     return (
-      <div className="race-container">
+      <div className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/10">
         <AnimatePresence mode="wait">
           <motion.div
             key={countdownValue}
-            className={`countdown ${countdownValue === 0 ? 'go' : ''}`}
+            className={`text-center font-extrabold [text-shadow:0_0_40px_rgba(255,255,255,0.5)] py-[60px] ${
+              countdownValue === 0
+                ? 'text-[140px] text-green-primary'
+                : 'text-[120px] text-white'
+            }`}
             initial={{ scale: 2.5, opacity: 0, rotate: -15 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             exit={{ scale: 0.3, opacity: 0, rotate: 15, filter: 'blur(8px)' }}
@@ -73,9 +76,9 @@ export default function MultiplayerRace({
   }
 
   return (
-    <div className="multiplayer-race">
+    <div className="w-full flex flex-col gap-3">
       <motion.div
-        className="race-container"
+        className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}

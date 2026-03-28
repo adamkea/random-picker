@@ -1,15 +1,43 @@
-* {
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-purple-primary: #a78bfa;
+  --color-purple-deep: #7c3aed;
+  --color-green-primary: #34d399;
+  --color-green-deep: #059669;
+  --color-gold-primary: #fbbf24;
+  --color-gold-deep: #f59e0b;
+  --color-red-primary: #ef4444;
+  --color-red-light: #f87171;
+  --color-red-deep: #dc2626;
+
+  /* Typography */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Custom animations */
+  --animate-title-bounce: title-bounce 0.6s ease infinite alternate;
+  --animate-fade-in: fade-in 0.2s ease;
+  --animate-winner-bounce: winner-bounce 0.5s ease infinite alternate;
+  --animate-loser-droop: loser-droop 1.5s ease infinite alternate;
+  --animate-sabotage-shake: sabotage-shake 0.3s ease;
+  --animate-flash-fade: flash-fade 0.5s ease forwards;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
   min-height: 100vh;
-  color: #fff;
   overflow-x: hidden;
+  color: white;
 }
 
 #root {
@@ -19,3 +47,7 @@ body {
   align-items: center;
   padding: 20px;
 }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }

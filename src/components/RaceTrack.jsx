@@ -46,9 +46,8 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
     const startTime = Date.now()
 
     if (raceGoal === 'loser') {
-      // Loser mode: everyone finishes during the normal duration, then the loser finishes after an extra delay
       const loserIndex = racers.findIndex(r => r.id === loserRef.current.id)
-      const extraTime = raceDuration * 0.3 // loser takes 30% longer
+      const extraTime = raceDuration * 0.3
       const totalDuration = raceDuration + extraTime
 
       const profiles = racers.map((_, i) => {
@@ -80,7 +79,6 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
           let pos = p * speed
 
           if (profile.isLoser) {
-            // Cap loser below others until the very end
             const cap = progress < 0.85 ? 0.55 + Math.random() * 0.01 : progress
             pos = Math.min(pos, cap)
             if (progress > 0.95) {
@@ -88,7 +86,6 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
             }
             pos = Math.min(Math.max(pos, 0), progress >= 1 ? 1 : 0.92)
           } else {
-            // Non-losers finish in the normal duration
             const minPos = normalProgress * 0.6
             pos = Math.max(pos, minPos)
             if (normalProgress > 0.9) {
@@ -114,7 +111,6 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
         }
       }, TICK_INTERVAL)
     } else {
-      // Winner mode: original logic
       const winnerIndex = racers.findIndex(r => r.id === winnerRef.current.id)
 
       const profiles = racers.map((_, i) => {
@@ -186,19 +182,19 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
 
   if (phase === 'countdown') {
     return (
-      <div className="race-container">
+      <div className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/10">
         <AnimatePresence mode="popLayout">
           <motion.div
             key={countdownValue}
-            className={`countdown ${countdownValue === 'GO!' ? 'go' : ''}`}
+            className={`text-center font-extrabold [text-shadow:0_0_40px_rgba(255,255,255,0.5)] py-[60px] ${
+              countdownValue === 'GO!'
+                ? 'text-[140px] text-green-primary'
+                : 'text-[120px] text-white'
+            }`}
             initial={{ scale: 2.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
-            transition={{
-              type: 'tween',
-              duration: 0.3,
-              ease: 'easeOut',
-            }}
+            transition={{ type: 'tween', duration: 0.3, ease: 'easeOut' }}
           >
             {countdownValue}
           </motion.div>
@@ -209,7 +205,7 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
 
   return (
     <motion.div
-      className="race-container"
+      className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}

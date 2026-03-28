@@ -105,7 +105,6 @@ function App() {
       await socket.createRoom(hostName.trim())
       setMode('multiplayer')
     } catch (err) {
-      // error is shown via socket.error or we set it
       console.error('Failed to create room:', err)
     } finally {
       setConnecting(false)
@@ -134,10 +133,14 @@ function App() {
     window.history.replaceState({}, '', window.location.pathname)
   }, [socket])
 
+  const btnBack = 'self-start text-sm px-4 py-2 rounded-[10px] border border-white/20 bg-white/10 text-white font-semibold cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all'
+  const btnStart = 'w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-3.5 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0'
+  const glassCard = 'w-full bg-white/[.06] rounded-2xl p-7 backdrop-blur-[10px] border border-white/10'
+
   return (
-    <div className="app">
-      <h1 className="app-title">
-        <span>🏁</span> Pick A Winner
+    <div className="w-full max-w-[1400px] flex flex-col items-center gap-6">
+      <h1 className="text-[60px] max-[600px]:text-[32px] font-bold text-center mt-2.5 [text-shadow:0_0_20px_rgba(255,255,255,0.2)]">
+        <span className="inline-block animate-title-bounce">🏁</span> Pick A Winner
       </h1>
 
       {/* Mode selection */}
@@ -152,15 +155,15 @@ function App() {
       {/* Host name entry */}
       {mode === 'host-name' && (
         <>
-          <button className="btn btn-reset btn-back-menu" onClick={handleBackToMenu}>
+          <button className={btnBack} onClick={handleBackToMenu}>
             &larr; Back
           </button>
-          <div className="session-join">
-            <h2>Host a Race</h2>
-            <form onSubmit={handleCreateRoom}>
+          <div className={`${glassCard} text-center`}>
+            <h2 className="text-xl font-semibold mb-5">Host a Race</h2>
+            <form className="flex flex-col gap-3 items-center" onSubmit={handleCreateRoom}>
               <input
                 type="text"
-                className="join-name-input"
+                className="w-full max-w-[300px] px-4 py-3 rounded-[10px] border-2 border-white/15 bg-white/[.08] text-white text-lg text-center outline-none focus:border-purple-primary placeholder:text-white/35 transition-colors"
                 placeholder="Your name"
                 maxLength={20}
                 value={hostName}
@@ -168,24 +171,24 @@ function App() {
                 autoFocus
               />
               <button
-                className="btn btn-start"
+                className={btnStart}
                 type="submit"
                 disabled={!hostName.trim() || connecting}
               >
                 {connecting ? 'Connecting...' : 'Create Room'}
               </button>
-              {socket.error && <p className="join-error">{socket.error}</p>}
+              {socket.error && <p className="text-red-light text-sm mt-2">{socket.error}</p>}
             </form>
           </div>
         </>
       )}
 
-      {/* Solo mode -- unchanged from original */}
+      {/* Solo mode */}
       {mode === 'solo' && (
         <>
           {phase === 'input' && (
             <>
-              <button className="btn btn-reset btn-back-menu" onClick={handleBackToMenu}>
+              <button className={btnBack} onClick={handleBackToMenu}>
                 &larr; Back
               </button>
               <InputPhase onStart={handleStartRace} />
@@ -221,7 +224,7 @@ function App() {
       {/* Multiplayer join flow */}
       {mode === 'multiplayer-join' && (
         <>
-          <button className="btn btn-reset btn-back-menu" onClick={handleBackToMenu}>
+          <button className={btnBack} onClick={handleBackToMenu}>
             &larr; Back
           </button>
           <SessionJoin
@@ -267,11 +270,10 @@ function App() {
             />
           )}
 
-          {/* Show if mode is multiplayer but socket hasn't received lobby yet */}
           {!socket.phase && !socket.lobbyState && (
-            <div className="session-join">
-              <p className="waiting-dots">Connecting...</p>
-              {socket.error && <p className="join-error">{socket.error}</p>}
+            <div className={`${glassCard} text-center`}>
+              <p className="text-white/50 text-base">Connecting...</p>
+              {socket.error && <p className="text-red-light text-sm mt-2">{socket.error}</p>}
             </div>
           )}
         </>
