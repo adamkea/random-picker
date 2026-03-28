@@ -6,21 +6,21 @@ export default function ModeSelector({ onSolo, onMultiplayer, onJoin }) {
 
   return (
     <div className="w-full">
-      <div className="flex gap-4 mb-5 max-[600px]:flex-col">
+      <div className="flex gap-5 mb-6 max-[600px]:flex-col">
         <button
-          className="flex-1 flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-white/10 bg-white/[.06] text-white cursor-pointer transition-all backdrop-blur-[10px] hover:border-green-primary hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
+          className="flex-1 flex flex-col items-center gap-3 p-8 rounded-2xl border-2 border-white/10 bg-white/[.07] text-white cursor-pointer transition-all backdrop-blur-xl hover:border-green-primary hover:bg-white/[.10] hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(0,0,0,0.4)]"
           onClick={onSolo}
         >
-          <span className="text-4xl">🏃</span>
-          <span className="text-lg font-bold">Solo Race</span>
+          <span className="text-5xl">🏃</span>
+          <span className="text-xl font-bold">Solo Race</span>
           <span className="text-sm text-white/50">Enter names &amp; pick a winner</span>
         </button>
         <button
-          className="flex-1 flex flex-col items-center gap-2 p-6 rounded-2xl border-2 border-white/10 bg-white/[.06] text-white cursor-pointer transition-all backdrop-blur-[10px] hover:border-purple-primary hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)]"
+          className="flex-1 flex flex-col items-center gap-3 p-8 rounded-2xl border-2 border-white/10 bg-white/[.07] text-white cursor-pointer transition-all backdrop-blur-xl hover:border-purple-primary hover:bg-white/[.10] hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(0,0,0,0.4)]"
           onClick={onMultiplayer}
         >
-          <span className="text-4xl">🎮</span>
-          <span className="text-lg font-bold">Host Multiplayer</span>
+          <span className="text-5xl">🎮</span>
+          <span className="text-xl font-bold">Host Multiplayer</span>
           <span className="text-sm text-white/50">Create a room for friends to join</span>
         </button>
       </div>

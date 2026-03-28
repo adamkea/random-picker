@@ -92,15 +92,15 @@ export default function InputPhase({ onStart }) {
     }`
 
   return (
-    <div className="w-full bg-white/[.06] rounded-2xl p-7 backdrop-blur-[10px] border border-white/10">
-      <h2 className="text-[22px] mb-4 font-semibold">Enter Racers</h2>
-      <p className="text-[13px] text-white/45 mb-2">
+    <div className="w-full bg-white/[.07] rounded-2xl p-10 backdrop-blur-xl border border-white/[.12]">
+      <h2 className="text-2xl mb-5 font-semibold">Enter Racers</h2>
+      <p className="text-[13px] text-white/45 mb-3">
         {entries.length}/{MAX_RACERS} racers — paste a comma or newline-separated list, or add one at a time
       </p>
 
-      <div className="flex flex-wrap gap-2 mb-3 min-h-[40px]">
+      <div className="flex flex-wrap gap-2 mb-4 min-h-[40px]">
         {entries.map((entry, i) => (
-          <div key={i} className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 text-[15px] border border-white/15 animate-fade-in">
+          <div key={i} className="flex items-center gap-1.5 bg-white/10 rounded-full px-4 py-2 text-[15px] border border-white/15 animate-fade-in">
             <span className="inline-flex items-center">
               <LottieRacer src={entry.lottie?.src} size={32} />
             </span>
@@ -115,7 +115,7 @@ export default function InputPhase({ onStart }) {
         ))}
       </div>
 
-      <div className="flex gap-2.5 mb-4">
+      <div className="flex gap-3 mb-5">
         <input
           ref={inputRef}
           type="text"
@@ -137,7 +137,7 @@ export default function InputPhase({ onStart }) {
         </button>
       </div>
 
-      <div className="flex items-center gap-3 mb-3 mt-2">
+      <div className="flex items-center gap-4 mb-4 mt-2">
         <span className="text-sm font-semibold text-white/60 whitespace-nowrap">Race Length</span>
         <div className="flex gap-1.5">
           {DURATION_OPTIONS.map(opt => (
@@ -152,7 +152,7 @@ export default function InputPhase({ onStart }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 mb-3 mt-2">
+      <div className="flex items-center gap-4 mb-4 mt-2">
         <span className="text-sm font-semibold text-white/60 whitespace-nowrap">Show</span>
         <div className="flex gap-1.5">
           <button
@@ -171,7 +171,7 @@ export default function InputPhase({ onStart }) {
       </div>
 
       <button
-        className="w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-3.5 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+        className="w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-4 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-3 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
         onClick={() => onStart(entries, duration, raceGoal)}
         disabled={entries.length < 2}
       >

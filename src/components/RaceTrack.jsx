@@ -182,7 +182,7 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
 
   if (phase === 'countdown') {
     return (
-      <div className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/10">
+      <div className="w-full bg-white/[.04] rounded-2xl p-8 border border-white/10">
         <AnimatePresence mode="popLayout">
           <motion.div
             key={countdownValue}
@@ -205,7 +205,7 @@ export default function RaceTrack({ racers, phase, duration, raceGoal = 'winner'
 
   return (
     <motion.div
-      className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/10"
+      className="w-full bg-white/[.04] rounded-2xl p-8 border border-white/10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}

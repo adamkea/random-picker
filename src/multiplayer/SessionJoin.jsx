@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-const glassCard = 'w-full bg-white/[.06] rounded-2xl p-7 backdrop-blur-[10px] border border-white/10 text-center'
-const btnStart = 'w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-3.5 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0'
+const glassCard = 'w-full bg-white/[.07] rounded-2xl p-10 backdrop-blur-xl border border-white/[.12] text-center'
+const btnStart = 'w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-4 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-3 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0'
 
 export default function SessionJoin({ onJoin, error }) {
   const [name, setName] = useState('')

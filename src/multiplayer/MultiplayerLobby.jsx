@@ -21,8 +21,8 @@ export default function MultiplayerLobby({ lobbyState, playerId, onSetDuration, 
   const playerCount = lobbyState.players.length
 
   return (
-    <div className="w-full bg-white/[.06] rounded-2xl p-7 backdrop-blur-[10px] border border-white/10">
-      <div className="text-center mb-6">
+    <div className="w-full bg-white/[.07] rounded-2xl p-10 backdrop-blur-xl border border-white/[.12]">
+      <div className="text-center mb-8">
         <span className="block text-sm text-white/50 mb-1">Room Code</span>
         <span className="block text-[56px] max-[600px]:text-[40px] font-black tracking-[12px] max-[600px]:tracking-[8px] bg-gradient-to-br from-purple-primary to-purple-deep bg-clip-text text-transparent">
           {lobbyState.code}
@@ -77,7 +77,7 @@ export default function MultiplayerLobby({ lobbyState, playerId, onSetDuration, 
             </div>
           </div>
           <button
-            className="w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-3.5 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+            className="w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-4 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-3 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
             disabled={playerCount < 2}
             onClick={onStartRace}
           >

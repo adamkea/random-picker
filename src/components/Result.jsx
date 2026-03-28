@@ -28,8 +28,8 @@ export default function Result({ winner, raceGoal = 'winner', onRerace, onNewRac
     return () => clearTimeout(timer)
   }, [isLoser])
 
-  const containerClass = `w-full text-center bg-white/[.06] rounded-2xl p-8 border ${
-    isLoser ? 'border-red-primary/30 bg-red-primary/[.06]' : 'border-white/15'
+  const containerClass = `w-full text-center bg-white/[.07] rounded-2xl p-12 backdrop-blur-xl border ${
+    isLoser ? 'border-red-primary/30 bg-red-primary/[.06]' : 'border-white/[.12]'
   }`
 
   return (

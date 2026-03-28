@@ -2,8 +2,8 @@ import LottieRacer from './LottieRacer'
 
 export default function History({ items, onClear }) {
   return (
-    <div className="w-full bg-white/[.04] rounded-2xl p-5 border border-white/[.08]">
-      <h3 className="text-base font-semibold mb-3 text-white/60">
+    <div className="w-full bg-white/[.04] rounded-2xl p-8 border border-white/[.08]">
+      <h3 className="text-base font-semibold mb-4 text-white/60">
         Race History
         <button
           className="float-right bg-transparent border-0 text-white/30 cursor-pointer text-xs hover:text-red-light transition-colors"

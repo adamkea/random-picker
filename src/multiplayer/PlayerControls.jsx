@@ -44,7 +44,7 @@ export default function PlayerControls({ playerId, players, boostMeter, onBoost,
   const meterPercent = Math.round(boostMeter || 0)
 
   return (
-    <div className={`w-full p-4 mt-3 bg-white/[.06] rounded-2xl border border-white/10 ${isSabotaged ? 'animate-sabotage-shake' : ''}`}>
+    <div className={`w-full p-6 mt-4 bg-white/[.07] rounded-2xl border border-white/[.12] backdrop-blur-xl ${isSabotaged ? 'animate-sabotage-shake' : ''}`}>
       {/* Boost meter */}
       <div className="relative h-6 bg-white/10 rounded-full overflow-hidden mb-3">
         <div

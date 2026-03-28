@@ -30,7 +30,7 @@ export default function MultiplayerResult({ raceFinish, lobbyState, playerId, on
   }, [isWinner])
 
   return (
-    <div className="w-full text-center bg-white/[.06] rounded-2xl p-8 border border-white/15">
+    <div className="w-full text-center bg-white/[.07] rounded-2xl p-12 backdrop-blur-xl border border-white/[.12]">
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand colors */
-  --color-purple-primary: #a78bfa;
-  --color-purple-deep: #7c3aed;
+  /* Brand colors — Abyss theme */
+  --color-purple-primary: #c084fc;   /* vivid violet, pops on dark */
+  --color-purple-deep: #a855f7;      /* rich purple */
   --color-green-primary: #34d399;
   --color-green-deep: #059669;
   --color-gold-primary: #fbbf24;
@@ -34,7 +34,7 @@
 
 body {
   font-family: var(--font-sans);
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  background: linear-gradient(135deg, #02030f 0%, #090c2a 50%, #050818 100%);
   min-height: 100vh;
   overflow-x: hidden;
   color: white;

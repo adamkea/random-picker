@@ -133,14 +133,15 @@ function App() {
     window.history.replaceState({}, '', window.location.pathname)
   }, [socket])
 
-  const btnBack = 'self-start text-sm px-4 py-2 rounded-[10px] border border-white/20 bg-white/10 text-white font-semibold cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all'
-  const btnStart = 'w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-3.5 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0'
-  const glassCard = 'w-full bg-white/[.06] rounded-2xl p-7 backdrop-blur-[10px] border border-white/10'
+  const btnBack = 'self-start text-sm px-5 py-2.5 rounded-[10px] border border-white/20 bg-white/10 text-white font-semibold cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all'
+  const btnStart = 'w-full bg-gradient-to-br from-green-primary to-green-deep text-white text-xl font-semibold py-4 px-10 rounded-[10px] cursor-pointer hover:-translate-y-px hover:shadow-[0_4px_15px_rgba(0,0,0,0.3)] transition-all mt-3 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0'
+  const glassCard = 'w-full bg-white/[.07] rounded-2xl p-10 backdrop-blur-xl border border-white/[.12]'
 
   return (
-    <div className="w-full max-w-[1400px] flex flex-col items-center gap-6">
-      <h1 className="text-[60px] max-[600px]:text-[32px] font-bold text-center mt-2.5 [text-shadow:0_0_20px_rgba(255,255,255,0.2)]">
-        <span className="inline-block animate-title-bounce">🏁</span> Pick A Winner
+    <div className="w-full max-w-[1400px] flex flex-col items-center gap-8">
+      <h1 className="text-[60px] max-[600px]:text-[32px] font-bold text-center mt-4">
+        <span className="inline-block animate-title-bounce">🏁</span>
+        <span className="bg-gradient-to-r from-white via-purple-primary to-white bg-clip-text text-transparent"> Pick A Winner</span>
       </h1>
 
       {/* Mode selection */}
