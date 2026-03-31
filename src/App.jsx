@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react'
 import InputPhase from './components/InputPhase'
 import RaceTrack from './components/RaceTrack'
 import Result from './components/Result'
-import History from './components/History'
 import ModeSelector from './components/ModeSelector'
 import { useSocket } from './multiplayer/useSocket'
 import SessionJoin from './multiplayer/SessionJoin'
@@ -35,13 +34,6 @@ function App() {
   const [duration, setDuration] = useState(30000)
   const [winner, setWinner] = useState(null)
   const [raceGoal, setRaceGoal] = useState('winner')
-  const [history, setHistory] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('emoji-racer-history'))
-      if (Array.isArray(saved)) return saved
-    } catch {}
-    return []
-  })
 
   // Multiplayer state
   const socket = useSocket()
@@ -57,9 +49,6 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('emoji-racer-history', JSON.stringify(history))
-  }, [history])
 
   // Solo handlers
   const handleStartRace = useCallback((entries, raceDuration, goal = 'winner') => {
@@ -79,7 +68,7 @@ function App() {
   const handleRaceFinish = useCallback((winningRacer) => {
     setWinner(winningRacer)
     setPhase('result')
-    setHistory(prev => [winningRacer, ...prev].slice(0, 20))
+
   }, [])
 
   const handleRerace = useCallback(() => {
@@ -92,9 +81,6 @@ function App() {
     setWinner(null)
   }, [])
 
-  const handleClearHistory = useCallback(() => {
-    setHistory([])
-  }, [])
 
   // Multiplayer handlers
   const handleCreateRoom = useCallback(async (e) => {
@@ -212,9 +198,6 @@ function App() {
             />
           )}
 
-          {history.length > 0 && (
-            <History items={history} onClear={handleClearHistory} />
-          )}
         </>
       )}
 

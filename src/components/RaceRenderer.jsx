@@ -4,7 +4,8 @@ import LottieRacer from './LottieRacer'
 const RACER_SIZE = 160
 
 export default function RaceRenderer({ racers, positions, velocities, duration }) {
-  const trackHeight = Math.max(400, racers.length * 130)
+  const count = racers.length
+  const trackHeight = window.innerHeight - 120
 
   return (
     <div className="race-track" style={{ height: trackHeight }}>
@@ -13,7 +14,7 @@ export default function RaceRenderer({ racers, positions, velocities, duration }
         const pos = positions[i] || 0
         const vel = velocities[i] || 0
         const isFinished = pos >= 0.99
-        const yOffset = (i / racers.length) * (trackHeight - RACER_SIZE - 24)
+        const yOffset = (i / Math.max(count, 1)) * (trackHeight - RACER_SIZE)
 
         return (
           <motion.div
