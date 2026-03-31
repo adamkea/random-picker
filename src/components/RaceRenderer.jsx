@@ -1,19 +1,29 @@
 import { motion } from 'motion/react'
 import LottieRacer from './LottieRacer'
 
-const RACER_SIZE = 160
+const MAX_RACER_SIZE = 160
+const MIN_RACER_SIZE = 40
 
 export default function RaceRenderer({ racers, positions, velocities, duration }) {
-  const trackHeight = Math.max(400, racers.length * 130)
+  const count = racers.length
+
+  // Compute racer size to fit all racers within the viewport-constrained track.
+  // The track height is set via CSS (100vh - header space). We use a rough
+  // estimate here and let CSS clamp the container. Each racer needs size + gap.
+  const availableHeight = window.innerHeight - 120
+  const sizeFromFit = Math.floor(availableHeight / Math.max(count, 1) * 0.75)
+  const racerSize = Math.max(MIN_RACER_SIZE, Math.min(MAX_RACER_SIZE, sizeFromFit))
+
+  const trackHeight = Math.max(availableHeight, count * (racerSize * 0.6))
 
   return (
-    <div className="race-track" style={{ height: trackHeight }}>
+    <div className="race-track" style={{ height: Math.min(trackHeight, availableHeight) }}>
       <div className="finish-line" />
       {racers.map((racer, i) => {
         const pos = positions[i] || 0
         const vel = velocities[i] || 0
         const isFinished = pos >= 0.99
-        const yOffset = (i / racers.length) * (trackHeight - RACER_SIZE - 24)
+        const yOffset = (i / count) * (Math.min(trackHeight, availableHeight) - racerSize - 8)
 
         return (
           <motion.div
@@ -36,7 +46,7 @@ export default function RaceRenderer({ racers, positions, velocities, duration }
             <div className={`racer-emoji ${isFinished ? 'racer-finished' : ''}`}>
               <LottieRacer
                 src={racer.lottie.src}
-                size={RACER_SIZE}
+                size={racerSize}
                 speed={Math.max(0.3, 1 + Math.abs(vel) * 80)}
                 playing={true}
               />
