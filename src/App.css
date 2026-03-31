@@ -1034,6 +1034,11 @@
     max-width: 100px;
   }
 
+  .racer-emoji .lottie-racer {
+    width: 96px !important;
+    height: 96px !important;
+  }
+
 
   .winner-emoji .lottie-racer,
   .loser-emoji .lottie-racer {
